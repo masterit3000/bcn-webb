@@ -5,7 +5,7 @@ class Menu extends Component {
         return (
 
             <div className="page-header-menu" >
-                <div className="container">
+                <div className="container-fluid">
                     <div className="hor-menu ">
                         <ul className="nav navbar-nav">
                             <li>

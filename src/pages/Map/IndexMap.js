@@ -5,36 +5,44 @@ import Marker from './Marker';
 import { Config } from '../../Config';
 import io from 'socket.io-client';
 import { Modal, Button } from 'react-bootstrap';
+import axios from 'axios';
+import Sound from 'react-sound';
 
 let socket = io('http://localhost:8899');
 
 class IndexMap extends Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isFire: false, lat: 0, long: 0 };
+        this.state = { showModal: false, modalContent: '', listDevices: [] };
         this.close = this.close.bind(this);
-    
+
     }
 
     componentDidMount() {
         var self = this;
-        socket.on('BackendFireState', function (data) {
-            self.setState({ isFire: data.FireState });
-            if(data.FireState){
-                self.setState({ showModal: true });
-            }
+        socket.on('DeviceIsFire', function (data) {
+            self.setState({ showModal: true, modalContent: 'Cảnh báo cháy tại: ' + data.name + ' - ' + data.address + ' - ' + data.phone });
+        });
+        socket.on('DeviceFireStateChanged', function (data) {
+
+            self.setState({ listDevices: data });
         });
 
         socket.on('DeviceConnected', function (data) {
-            self.setState({ isFire: data.isFire, lat: data.Lat, long: data.Long });
-            if(data.isFire){
-                 self.setState({ showModal: true });
-            }
+            self.setState({ listDevices: data });
         });
 
         socket.on('DeviceDisconnected', function (data) {
-            self.setState({ isFire: false, lat: 0, long: 0 });
+            self.setState({ listDevices: data });
         });
+
+        axios.get(Config.ServiceUrl + '/ListDevices', {})
+            .then(function (response) {
+                self.setState({ listDevices: response.data });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     static defaultProps = {
@@ -45,7 +53,7 @@ class IndexMap extends Component {
     close() {
         this.setState({ showModal: false });
     }
-    
+
     render() {
         const style = {
             position: 'relative',
@@ -57,12 +65,13 @@ class IndexMap extends Component {
         return (
             //BEGIN PAGE CONTAINER 
             <div className="page-container">
-                <Modal show={this.state.showModal}  onHide={this.close}>
+                <Modal show={this.state.showModal} onHide={this.close}>
                     <Modal.Header closeButton>
                         <Modal.Title>Cảnh báo cháy</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Tại địa điểm Số 111 Đường ABC XYZ</p>
+                         <Sound url="assets/fire-alarm-sound.mp3" playStatus="PLAYING" />
+                        <p>{this.state.modalContent}</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button bsStyle="danger" onClick={this.close}>Close</Button>
@@ -70,11 +79,11 @@ class IndexMap extends Component {
                 </Modal>
 
                 {/*<!-- BEGIN PAGE HEAD -->*/}
-                <PageHead title="Index Map" subTitle="Show All Fire Places" />
+                <PageHead title="Bản đồ" subTitle="PCCC" />
                 {/*<!-- END PAGE HEAD -->*/}
                 {/*<!-- BEGIN PAGE CONTENT -->*/}
                 <div className="page-content">
-                    <div className="container">
+                    <div className="container-fluid">
                         {/*<!-- BEGIN PAGE CONTENT INNER -->*/}
                         <div className="row">
                             <div className="col-md-12">
@@ -97,7 +106,11 @@ class IndexMap extends Component {
                                             style={style}
                                             defaultCenter={this.props.center}
                                             defaultZoom={this.props.zoom}>
-                                            <Marker isFire={this.state.isFire} lat={this.state.lat} lng={this.state.long} />
+                                            {
+                                                this.state.listDevices.map(function (device) {
+                                                    return <Marker key={device.markerId} isOnline={device.isOnline} name={device.name} address={device.address} phone={device.phone} isFire={device.isFire} lat={device.lat} lng={device.long} />
+                                                })
+                                            }
                                         </GoogleMap>
                                     </div>
                                 </div>

@@ -4,7 +4,7 @@ class PageHead extends Component {
     render() {
         return (
             <div className="page-head">
-                <div className="container">
+                <div className="container-fluid">
                     {/*<!-- BEGIN PAGE TITLE -->*/}
                     <div className="page-title">
                         <h1>{this.props.title}<small>&nbsp;{this.props.subTitle}</small></h1>

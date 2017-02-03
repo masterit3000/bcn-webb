@@ -9,7 +9,7 @@ class Header extends Component {
         return (
             <div className="page-header">
                 <div className="page-header-top">
-                    <div className="container">
+                    <div className="container-fluid">
                         <Logo />
                         <TopNavMenu />
                     </div>
