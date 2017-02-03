@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Sound from 'react-sound';
-
+//
 let socket = io(Config.SocketUrl);
 
 class IndexMap extends Component {
