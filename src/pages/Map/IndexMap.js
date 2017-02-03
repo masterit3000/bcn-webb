@@ -8,7 +8,7 @@ import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Sound from 'react-sound';
 
-let socket = io('http://localhost:8899');
+let socket = io(Config.socketUrl);
 
 class IndexMap extends Component {
     constructor(props) {
