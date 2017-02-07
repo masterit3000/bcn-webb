@@ -1,0 +1,40 @@
+body{
+    background-color: rgb(51, 51, 51) !important
+}
+
+.logo{
+    margin: 60px auto 20px auto;
+    padding: "15px";
+    text-align: "center";
+    color: "#FFF";
+}
+
+.logo a{
+    text-align: center;
+    color: #FFF;
+    font-size: 15px;
+    margin: 0 auto;
+}
+
+.login-s{
+    color: #333333;
+    padding: 0px !important;
+    margin: 0px !important;
+    background-color: #333333;
+    height: "100%"
+}
+
+.content-s{
+    background-color: #fff;
+    width: 360px;
+    margin: 0 auto;
+    margin-bottom: 0px;
+    padding: 30px;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+}

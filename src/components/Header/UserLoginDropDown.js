@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 
 class UserLoginDropDown extends Component {
     render() {
+        var name = localStorage.getItem('name');
+        var avatar = localStorage.getItem('avatar');
+
         return (
             <li className="dropdown dropdown-user dropdown-dark">
                 <a href="javascript:;" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                    <img alt="" className="img-circle" src="assets/admin/layout3/img/avatar9.jpg" />
-                    <span className="username username-hide-mobile">Nick</span>
+                    <img alt="" className="img-circle" src={avatar} />
+                    <span className="username username-hide-mobile">{name}</span>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-default">
                     <li>
@@ -36,7 +39,7 @@ class UserLoginDropDown extends Component {
                             <i className="icon-lock"></i> Lock Screen </a>
                     </li>
                     <li>
-                        <a href="login.html">
+                        <a href="/Login">
                             <i className="icon-key"></i> Log Out </a>
                     </li>
                 </ul>
