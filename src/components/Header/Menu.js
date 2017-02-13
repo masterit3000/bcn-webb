@@ -12,7 +12,13 @@ class Menu extends Component {
                                 <a href="/">Bản đồ</a>
                             </li>
                             <li>
+                                <a href="/FireHistory">Lịch sử vụ cháy</a>
+                            </li>
+                            <li>
                                 <a href="/ListDevices">Danh sách tủ báo cháy</a>
+                            </li>
+                            <li>
+                                <a href="/Admins">Danh sách người dùng</a>
                             </li>
                         </ul>
                     </div>
