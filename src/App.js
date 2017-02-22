@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import { defineMessages, FormattedMessage, injectIntl, intlShape } from 'react-intl';
+// import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import Header from './components/Header/Header'
 
-const messages = defineMessages({
-  hi: {
-    id: 'Hello',
-    defaultMessage: 'Start your next react project in seconds',
-  }
-});
+// const messages = defineMessages({
+//   hi: {
+//     id: 'Hello',
+//     defaultMessage: 'Start your next react project in seconds',
+//   }
+// });
 
 class App extends Component {
 
   render() {
-    const {formatMessage} = this.props.intl;
+    // const {formatMessage} = this.props.intl;
 
     return (
       <div>
@@ -24,8 +23,9 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
-  intl: intlShape.isRequired
-}
+// App.propTypes = {
+//   intl: intlShape.isRequired
+// }
 
-export default injectIntl(App);
+// export default injectIntl(App);
+export default App;

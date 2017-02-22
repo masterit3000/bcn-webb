@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import moment from 'moment';
 import axios from 'axios';
 import { Config } from '../../Config';
@@ -46,22 +46,22 @@ class FireHistoryTable extends Component {
                 striped
                 cellEdit={cellEditProp}
                 hover>
-                <TableHeaderColumn dataField='fireDate' dataFormat={dateFormat} >
+                <TableHeaderColumn dataField='fireDate' editable={ false } dataFormat={dateFormat} >
                     Thời gian
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='markerId' >
+                <TableHeaderColumn dataField='markerId' editable={ false } >
                     id
                     </TableHeaderColumn>
-                <TableHeaderColumn hidden dataField='_id' isKey >
+                <TableHeaderColumn hidden dataField='_id' editable={ false } isKey >
                     id
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='name' >
+                <TableHeaderColumn dataField='name' editable={ false } >
                     Tên
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='address' >
+                <TableHeaderColumn dataField='address' editable={ false } >
                     Địa chỉ
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='phone' >
+                <TableHeaderColumn dataField='phone' editable={ false } >
                     Điện thoại
                     </TableHeaderColumn>
 

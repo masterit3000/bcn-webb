@@ -4,19 +4,19 @@ class NotificationDropDown extends Component {
     render() {
         return (
             <li className="dropdown dropdown-extended dropdown-dark dropdown-notification" id="header_notification_bar">
-                <a href="javascript:;" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <i className="icon-bell"></i>
                     <span className="badge badge-default">7</span>
                 </a>
                 <ul className="dropdown-menu">
                     <li className="external">
                         <h3>You have <strong>12 pending</strong> tasks</h3>
-                        <a href="javascript:;">view all</a>
+                        <a href="#">view all</a>
                     </li>
                     <li>
                         <ul className="dropdown-menu-list scroller" style={{ height: '250px' }} data-handle-color="#637283">
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">just now</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-success">
@@ -26,7 +26,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">3 mins</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-danger">
@@ -36,7 +36,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">10 mins</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-warning">
@@ -46,7 +46,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">14 hrs</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-info">
@@ -56,7 +56,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">2 days</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-danger">
@@ -66,7 +66,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">3 days</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-danger">
@@ -76,7 +76,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">4 days</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-warning">
@@ -86,7 +86,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">5 days</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-info">
@@ -96,7 +96,7 @@ class NotificationDropDown extends Component {
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:;">
+                                <a href="#">
                                     <span className="time">9 days</span>
                                     <span className="details">
                                         <span className="label label-sm label-icon label-danger">

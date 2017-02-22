@@ -4,14 +4,14 @@ class InboxDropDown extends Component {
     render() {
         return (
             <li className="dropdown dropdown-extended dropdown-dark dropdown-inbox" id="header_inbox_bar">
-                <a href="javascript:;" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span className="circle">3</span>
                     <span className="corner"></span>
                 </a>
                 <ul className="dropdown-menu">
                     <li className="external">
                         <h3>You have <strong>7 New</strong> Messages</h3>
-                        <a href="javascript:;">view all</a>
+                        <a href="#">view all</a>
                     </li>
                     <li>
                         <ul className="dropdown-menu-list scroller" style={{ height: "275px" }} data-handle-color="#637283">

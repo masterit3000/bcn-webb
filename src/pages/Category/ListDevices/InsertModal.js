@@ -3,8 +3,9 @@ import { Modal, Button } from 'react-bootstrap';
 import { Config } from '../../../Config';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import SearchBox from "react-google-maps/lib/places/SearchBox";
-import InsertModalCss from './InsertModalStyle.css';
+import './InsertModalStyle.css';
 import axios from 'axios';
+import _ from 'lodash';
 
 /* global google */
 //SearchBox style
@@ -52,8 +53,8 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
 ));
 
 class InsertModal extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             bounds: null,
             markerPlace: [],
@@ -63,7 +64,9 @@ class InsertModal extends Component {
             modalDeviceIdError: false,
             modalDeviceIdIcon: 'fa fa-pencil',
             modalIsError: false,
-            modalIsErrorText: ''
+            modalIsErrorText: '',
+            imeis: [],
+            areas: []
         };
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
         this.handleSearchBoxMounted = this.handleSearchBoxMounted.bind(this);
@@ -73,6 +76,8 @@ class InsertModal extends Component {
         this.onSave = this.onSave.bind(this);
         this.handleChanged = this.handleChanged.bind(this);
         this.onModalBtnCloseClicked = this.onModalBtnCloseClicked.bind(this);
+        this.loadUnusedImeiCombobox = this.loadUnusedImeiCombobox.bind(this);
+        this.loadAreas = this.loadAreas.bind(this);
     }
     onModalBtnCloseClicked(event) {
         this.props.onHide();
@@ -85,7 +90,11 @@ class InsertModal extends Component {
             address: this.state.txtAddress,
             phone: this.state.txtPhone,
             lat: this.state.selectedLat,
-            long: this.state.selectedLong
+            long: this.state.selectedLong,
+            imei: this.state.selectPhone,
+            desc: this.state.txtDesc,
+            area: this.state.selectArea,
+            areaName: this.state.selectAreaName
         };
 
         var instance = axios.create({
@@ -97,9 +106,10 @@ class InsertModal extends Component {
         instance.post('/Common/InsertDeviceLocation', postJson)
             .then(function (response) {
                 if (response.data.ResponseCode === 1) {
-                    self.setState({ modalIsError: false });
+                    self.setState({ modalIsError: false, selectedLat: 0, selectedLong: 0 });
+                    self.loadUnusedImeiCombobox();
                     self.props.onHide();
-                    self.props.loadData();
+                    self.props.loadDataParent();
                 } else {
                     self.setState({ modalIsError: true, modalIsErrorText: 'Lỗi không thể thêm mới dữ liệu' });
                 }
@@ -126,6 +136,10 @@ class InsertModal extends Component {
         var state = {};
         state[event.target.name] = event.target.value;
         this.setState(state);
+        //selectAreaName
+        if (event.target.name === "selectArea") {
+            this.setState({ selectAreaName: event.target.text });
+        }
     }
 
     handleMapMounted(map) {
@@ -147,6 +161,62 @@ class InsertModal extends Component {
         });
     }
 
+    componentWillMount() {
+        this.loadUnusedImeiCombobox();
+        this.loadAreas();
+    }
+
+    loadUnusedImeiCombobox() {
+        var self = this;
+        var token = localStorage.getItem('token');
+        
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.get('FireHistory/GetListUnusedImei').then(function (response) {
+            var imeis = response.data.data;
+            if (_.size(imeis) > 0) {
+                self.setState({ imeis: imeis });
+                self.setState({ selectPhone: imeis[0].imei });
+
+            } else {
+                self.setState({ selectPhone: '', imeis: [] });
+            }
+        });
+    }
+
+    loadAreas() {
+        var self = this;
+        var token = localStorage.getItem('token');
+
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.get('/Area/ListAreasNoParent').then(function (response) {
+
+            var areas = response.data.data;
+
+            if (_.size(areas) > 0) {
+                self.setState({ areas: areas });
+                self.setState({ selectArea: areas[0].id });
+            } else {
+                self.setState({ selectArea: '', selectAreaName: '' });
+            }
+        });
+    }
+
     render() {
         const style = {
             position: 'relative',
@@ -155,8 +225,20 @@ class InsertModal extends Component {
             flex: 1,
             height: '550px'
         };
+
+        var options = this.state.imeis.map(function (opt, i) {
+            return <option key={i} value={opt.imei}>{opt.manufacture}-{opt.deviceName}-{opt.imei}</option>;
+        }, this);
+
+        var optionsAreas = this.state.areas.map(function (opt, i) {
+            return <option key={i} value={opt.id}>{opt.name}</option>;
+        }, this);
+
+        const { loadDataParent, ...rest } = this.props;
         return (
-            <Modal {...this.props} bsSize="large" aria-labelledby="contained-modal-title-lg">
+
+
+            <Modal {...rest} bsSize="large" aria-labelledby="contained-modal-title-lg">
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-lg"><i className="fa fa-plus" aria-hidden="true"></i> Thêm mới tủ báo cháy</Modal.Title>
                 </Modal.Header>
@@ -172,6 +254,8 @@ class InsertModal extends Component {
                         }
 
                         <div className="col-md-6">
+
+
                             <GettingStartedGoogleMap
                                 center={this.state.center}
                                 containerElement={
@@ -190,6 +274,17 @@ class InsertModal extends Component {
                                 onPlacesChanged={this.handlePlacesChanged}
                                 onMapClick={this.handleMapClick}
                             />
+                            <br />
+                            <div className="form-group form-md-line-input">
+                                <input type="text" disabled className="form-control" value={this.state.selectedLat} id="idLatitude" name="txtLatitude" />
+                                <label htmlFor="idLatitude">Kinh độ ( Latitude )</label>
+                            </div>
+                            <div className="form-group form-md-line-input">
+                                <input type="text" disabled className="form-control" value={this.state.selectedLong} id="idLongtitude" name="txtLongtitude" />
+                                <label htmlFor="idLongtitude">Vĩ độ ( Longtitude )</label>
+
+                            </div>
+
                         </div>
                         <div className="col-md-6">
                             <div className="portlet light">
@@ -222,14 +317,23 @@ class InsertModal extends Component {
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtPhone" name="txtPhone" />
                                         <label htmlFor="idtxtPhone">Số điện thoại</label>
                                     </div>
-                                    <div className="form-group form-md-line-input">
-                                        <input type="text" disabled className="form-control" value={this.state.selectedLat} id="idLatitude" name="txtLatitude" />
-                                        <label htmlFor="idLatitude">Kinh độ ( Latitude )</label>
+                                    <div className="form-group form-md-line-input form-md-floating-label">
+                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
+                                        <label htmlFor="idtxtDesc">Mô tả</label>
                                     </div>
-                                    <div className="form-group form-md-line-input">
-                                        <input type="text" disabled className="form-control" value={this.state.selectedLong} id="idLongtitude" name="txtLongtitude" />
-                                        <label htmlFor="idLongtitude">Vĩ độ ( Longtitude )</label>
+                                    <div className="form-group form-md-line-input form-md">
+                                        <select onChange={this.handleChanged} className="form-control" id="idSelectArea" name="selectArea" >
+                                            {optionsAreas}
+                                        </select>
+                                        <label htmlFor="idSelectArea">Khu vực</label>
                                     </div>
+                                    <div className="form-group form-md-line-input form-md">
+                                        <select onChange={this.handleChanged} className="form-control" id="idSelectPhone" name="selectPhone" >
+                                            {options}
+                                        </select>
+                                        <label htmlFor="idSelectPhone">Kết Nối điện thoại</label>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

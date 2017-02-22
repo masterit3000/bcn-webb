@@ -5,13 +5,10 @@ import axios from 'axios';
 import { Config } from '../../Config';
 import FireHistoryTable from './FireHistoryTable';
 
-const tableName = 'firehistories';
-
-
 class FireHistory extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { fireHistoryData:  [] };
         this.loadData = this.loadData.bind(this);
     }
@@ -53,7 +50,7 @@ class FireHistory extends Component {
                                             Chi tiết
 							            </div>
                                         <div className="tools">
-                                            <a href="javascript:;" className="collapse">
+                                            <a href="#" className="collapse">
                                             </a>
                                         </div>
                                     </div>

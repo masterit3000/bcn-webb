@@ -1,0 +1,11 @@
+.dd-handle{
+    cursor: default
+}
+
+.dd-handle i{
+    cursor: pointer
+}
+
+.edtTxt{
+    height: 22px;
+}

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
 import axios from 'axios';
 import { Config } from '../../../Config';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Grid, Row, Col } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, HelpBlock, Grid, Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import PageHead from '../../PageHead';
+import FollowModal from './FollowModal';
+import AdminTable from './AdminTable';
 import _ from 'lodash';
 
 const tableName = 'admins';
-const keyTableName = 'userId';
 
 var AvatarDropzone = React.createClass({
     onDrop: function (files) {
@@ -26,142 +26,11 @@ var AvatarDropzone = React.createClass({
     }
 });
 
-function imageFormatter(cell, row) {
-    return "<img class='img-circle' style='width:25px; height:25px;' src='" + cell + "'/>";
-}
-
-function onAfterDeleteRow(rowKeys) {
-
-    var obj = Object();
-    obj.table = tableName;
-    obj.key = keyTableName;
-    obj.values = rowKeys;
-
-    var token = localStorage.getItem('token');
-    var instance = axios.create({
-        baseURL: Config.apiUrl,
-        timeout: Config.RequestTimeOut,
-        headers: { 'x-access-token': token }
-    });
-    instance.post('/Common/DeleteData', obj).then(function (response) {
-        console.log(response);
-    });
-}
-
-function onAfterUpdateCell(row, cellName, cellValue) {
-    var obj = Object();
-    obj.table = tableName;
-    obj.key = keyTableName;
-    obj.value = row[keyTableName];
-    obj.cellName = cellName;
-    obj.cellValue = cellValue;
-
-    var token = localStorage.getItem('token');
-    var instance = axios.create({
-        baseURL: Config.ServiceUrl,
-        timeout: Config.RequestTimeOut,
-        headers: { 'x-access-token': token }
-    });
-    instance.post('/Common/UpdateData', obj).then(function (response) {
-    });
-}
-
-// validator function pass the user input value and should return true|false.
-function nameEditValidator(value) {
-    if (!value) {
-        return 'Bạn chưa nhập tên!'
-    }
-    return true;
-}
-
-function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-}
-
-// validator function pass the user input value and should return true|false.
-function emailEditValidator(value) {
-    if (!value) {
-        return 'Bạn chưa nhập email!';
-    } else if (!validateEmail(value)) {
-        return 'Sai định dạng email!';
-    }
-    return true;
-}
-
-class AdminTable extends React.Component {
-
-    handleInsertButtonClick = (onClick) => {
-        // Custom your onClick event here,
-        // it's not necessary to implement this function if you have no any process before onClick
-        this.props.showInsertModal();
-    }
-
-    createCustomInsertButton = (onClick) => {
-        return (
-            <InsertButton
-                btnText='Thêm mới'
-                btnContextual='btn-primary'
-                className='btn-add'
-                btnGlyphicon='glyphicon-edit'
-                onClick={() => this.handleInsertButtonClick(onClick)} />
-        );
-    }
-
-    render() {
-        var products = this.props.products;
-        const options = {
-            afterDeleteRow: onAfterDeleteRow,
-            deleteText: 'Xóa',
-            insertBtn: this.createCustomInsertButton
-        };
-
-        const selectRowProp = {
-            mode: 'checkbox'
-        };
-
-        const cellEditProp = {
-            mode: 'click',
-            blurToSave: true,
-            afterSaveCell: onAfterUpdateCell
-        };
-        return (
-
-            <BootstrapTable
-                data={products}
-                deleteRow={true}
-                insertRow={true}
-                selectRow={selectRowProp}
-                options={options}
-                cellEdit={cellEditProp}
-                search={true}
-                pagination
-                striped
-                hover>
-                <TableHeaderColumn dataField='avatar'
-                    dataFormat={imageFormatter}>
-                    Ảnh đại diện
-                    </TableHeaderColumn>
-                <TableHeaderColumn dataField={keyTableName} isKey>
-                    Mã Admin
-                    </TableHeaderColumn>
-                <TableHeaderColumn dataField='name' editable={{ type: 'text', validator: nameEditValidator }}>
-                    Tên
-                    </TableHeaderColumn>
-                <TableHeaderColumn dataField='email' editable={{ type: 'text', validator: emailEditValidator }}>
-                    Email
-                    </TableHeaderColumn>
-                    
-            </BootstrapTable>
-
-        );
-    }
-}
 
 class ManageAdmins extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             admins: [],
             showInsertModal: false,
@@ -172,20 +41,23 @@ class ManageAdmins extends Component {
             isNotValidPasswordRetype: false,
             isNotValidName: false,
             isCreateFailed: false,
-            isCreateFailedText: ''
+            isCreateFailedText: '',
+            showFollowModal: false
         };
         this.showInsertModal = this.showInsertModal.bind(this);
         this.hideInsertModal = this.hideInsertModal.bind(this);
         this.handleChanged = this.handleChanged.bind(this);
         this.doInsert = this.doInsert.bind(this);
         this.loadData = this.loadData.bind(this);
+        this.showFollowModal = this.showFollowModal.bind(this);
+        this.closeFollowModal = this.closeFollowModal.bind(this);
     }
 
     componentWillMount() {
         this.loadData();
     }
 
-    loadData(){
+    loadData() {
         var self = this;
         var token = localStorage.getItem('token');
         var params = new URLSearchParams();
@@ -218,7 +90,7 @@ class ManageAdmins extends Component {
             //do insert admin
             var self = this;
             var token = localStorage.getItem('token');
-            var json = new Object();
+            var json = {};
 
             json.username = this.state.txtUsername;
             json.password = this.state.txtPassword;
@@ -232,7 +104,7 @@ class ManageAdmins extends Component {
                 headers: { 'x-access-token': token }
             });
             instance.post('/Admin/CreateUser', json).then(function (response) {
-                self.setState({ isCreateFailed: false, showInsertModal:false });
+                self.setState({ isCreateFailed: false, showInsertModal: false });
                 self.loadData();
             });
         }
@@ -273,17 +145,17 @@ class ManageAdmins extends Component {
                 self.setState({ isNotValidEmail: true });
             } else {
                 //Check trung email
-                var token = localStorage.getItem('token');
-                var params = new URLSearchParams();
-                params.append('table', tableName);
-                params.append('column', 'email');
-                params.append('value', e.target.value);
-                var instance = axios.create({
+                var token2 = localStorage.getItem('token');
+                var params2 = new URLSearchParams();
+                params2.append('table', tableName);
+                params2.append('column', 'email');
+                params2.append('value', e.target.value);
+                var instance2 = axios.create({
                     baseURL: Config.ServiceUrl,
                     timeout: Config.RequestTimeOut,
-                    headers: { 'x-access-token': token }
+                    headers: { 'x-access-token': token2 }
                 });
-                instance.post('/Common/FindOne', params).then(function (response) {
+                instance2.post('/Common/FindOne', params2).then(function (response) {
                     var found = response.data.data
 
                     if (found && _.size(found) > 0) {
@@ -325,6 +197,14 @@ class ManageAdmins extends Component {
         }
     }
 
+    closeFollowModal() {
+        this.setState({ showFollowModal: false });
+    }
+
+    showFollowModal(id) {
+        this.setState({ showFollowModal: true, followId: id });
+    }
+
     render() {
 
         const inputValidClass = "form-group form-md-line-input form-md-floating-label";
@@ -350,12 +230,12 @@ class ManageAdmins extends Component {
                                             Danh sách người dùng
 							            </div>
                                         <div className="tools">
-                                            <a href="javascript:;" className="collapse">
+                                            <a href="#" className="collapse">
                                             </a>
                                         </div>
                                     </div>
                                     <div className="portlet-body">
-                                        <AdminTable showInsertModal={this.showInsertModal} products={this.state.admins} />
+                                        <AdminTable showFollowModal={this.showFollowModal} showInsertModal={this.showInsertModal} products={this.state.admins} />
                                     </div>
                                 </div>
                             </div>
@@ -365,6 +245,7 @@ class ManageAdmins extends Component {
                 </div>
 
                 {/*<!-- END PAGE CONTENT -->*/}
+                <FollowModal closeFollowModal={this.closeFollowModal} show={this.state.showFollowModal} followId={this.state.followId} />
 
                 <Modal
                     animation={true}

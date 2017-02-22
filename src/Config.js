@@ -4,5 +4,7 @@ export const Config = {
     //SocketUrl: 'http://103.48.83.139:8899',
     ServiceUrl: 'http://localhost:8898',
     SocketUrl: 'http://localhost:8899',
-    RequestTimeOut: 10000
+    RequestTimeOut: 10000,
+    basicAuthUsername: 'pccc',
+    basicAuthPassword: 'basicAuthPassword'
 };

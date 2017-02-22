@@ -1,0 +1,21 @@
+.tu-choi{
+    margin-left: -75px !important;
+    margin-top: 25px !important;
+    position: inherit;
+}
+.da-duyet{
+    margin-left: -82px !important;
+    margin-top: 25px !important;
+    position: inherit;
+}
+.chua-duyet{
+    margin-left: -97px !important;
+    margin-top: 25px !important;
+    position: inherit;
+}
+.btn-table{
+    padding: 2px 6px 4px 6px !important;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+}

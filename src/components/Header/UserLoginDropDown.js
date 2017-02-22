@@ -7,7 +7,7 @@ class UserLoginDropDown extends Component {
 
         return (
             <li className="dropdown dropdown-user dropdown-dark">
-                <a href="javascript:;" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <a href="#" className="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <img alt="" className="img-circle" src={avatar} />
                     <span className="username username-hide-mobile">{name}</span>
                 </a>
@@ -27,7 +27,7 @@ class UserLoginDropDown extends Component {
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;">
+                        <a href="#">
                             <i className="icon-rocket"></i> My Tasks <span className="badge badge-success">
                                 7 </span>
                         </a>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LoginStyleSheet from './LoginStyleSheet.css';
+import './LoginStyleSheet.css';
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import axios from 'axios';
@@ -130,7 +130,7 @@ class LoginContainer extends Component {
                         <div className="forget-password">
                             <h4>Quên mật khẩu ?</h4>
                             <p>
-                                Ấn vào <a href="javascript:;" id="forget-password">
+                                Ấn vào <a href="#" id="forget-password">
                                     đây </a>
                                 để lấy lại mật khẩu.
 			                </p>

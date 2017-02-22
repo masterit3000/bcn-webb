@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PageHead from '../PageHead';
+// import PageHead from '../PageHead';
 import { Config } from '../../Config';
 import io from 'socket.io-client';
 import { Modal, Button } from 'react-bootstrap';
@@ -10,9 +10,9 @@ import SearchBox from "react-google-maps/lib/places/SearchBox";
 import fireMarker from './fire.png';
 import normalMarker from './normal-marker.png';
 import offlineMarker from './offline-marker.png';
-import { bounce } from 'react-animations';
-import { StyleSheet, css } from 'aphrodite';
-import { ToastContainer, ToastMessage, ReactToastr } from "react-toastr";
+// import { bounce } from 'react-animations';
+// import { StyleSheet, css } from 'aphrodite';
+import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';
 
@@ -130,31 +130,42 @@ class IndexMap extends Component {
         var self = this;
 
         socket.on('DeviceFireStateChanged', function (data) {
-            if (data.isFire) {
-                self.setState({
-                    showModal: true,
-                    txtTxtFireNote: '',
-                    modalContent: 'Cảnh báo cháy tại: ' + data.doc.name + ' - ' + data.doc.address + ' - ' + data.doc.phone,
-                    fireHistoryId: data.fireHistoryId
-                });
-                self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
-            } else {
-                self.showToast(TOAST_INFO, 'Cảnh báo cháy', 'Tại: ' + data.doc.name + ' Đã tắt');
-            }
 
-            self.setState({
-                markers: self.state.markers.map(marker => {
-                    if (_.isEqual(marker.markerId, data.MarkerId)) {
+            var arrListDevices = self.state.listDevices;
 
-                        return {
-                            ...marker,
-                            icon: data.isFire ? fireMarker : normalMarker,
-                            animation: data.isFire ? 1 : 4
-                        };
+            _.forEach(arrListDevices, function (value) {
+                if (_.isEqual(value.MarkerId, arrListDevices.MarkerId)) {
+                    if (data.isFire) {
+                        self.setState({
+                            showModal: true,
+                            txtTxtFireNote: '',
+                            modalContent: 'Cảnh báo cháy tại: ' + data.doc.name + ' - ' + data.doc.address + ' - ' + data.doc.phone,
+                            fireHistoryId: data.fireHistoryId
+                        });
+                        self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
+                    } else {
+                        self.showToast(TOAST_INFO, 'Cảnh báo cháy', 'Tại: ' + data.doc.name + ' Đã tắt');
                     }
-                    return marker;
-                }),
+
+                    self.setState({
+                        markers: self.state.markers.map(marker => {
+                            if (_.isEqual(marker.markerId, data.MarkerId)) {
+
+                                return {
+                                    ...marker,
+                                    icon: data.isFire ? fireMarker : normalMarker,
+                                    animation: data.isFire ? 1 : 4
+                                };
+                            }
+                            return marker;
+                        }),
+                    });
+                    
+                    return false;
+                }
             });
+
+
         });
 
         socket.on('DeviceConnected', function (data) {
@@ -192,37 +203,44 @@ class IndexMap extends Component {
             });
         });
 
-        axios.get(Config.ServiceUrl + '/ListDevices', {})
-            .then(function (response) {
-                self.setState({ listDevices: response.data });
+        var token = localStorage.getItem('token');
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.get('/MainMap/ListDevices').then(function (response) {
+            self.setState({ listDevices: response.data.data });
 
-                var tempMarkers = [];
 
-                response.data.map(function (device) {
-                    var markerIcon = offlineMarker;
-                    if (device.isOnline) {
-                        if (device.isFire) {
-                            markerIcon = fireMarker;
-                        } else {
-                            markerIcon = normalMarker;
-                        }
+            var tempMarkers = [];
+            _.forEach(response.data.data, function (device) {
+                var markerIcon = offlineMarker;
+                if (device.isOnline) {
+                    if (device.isFire) {
+                        markerIcon = fireMarker;
+                    } else {
+                        markerIcon = normalMarker;
                     }
-                    tempMarkers.push({
-                        markerId: device.markerId,
-                        position: new google.maps.LatLng(device.lat, device.long),
-                        name: device.name,
-                        address: device.address,
-                        phone: device.phone,
-                        icon: markerIcon,
-                        animation: device.isFire ? 1 : 4,
-                        showInfo: false
-                    });
+                }
+                tempMarkers.push({
+                    markerId: device.markerId,
+                    position: new google.maps.LatLng(device.lat, device.long),
+                    name: device.name,
+                    address: device.address,
+                    phone: device.phone,
+                    icon: markerIcon,
+                    animation: device.isFire ? 1 : 4,
+                    showInfo: false
                 });
-                self.setState({ markers: tempMarkers });
-            })
-            .catch(function (error) {
-                console.log(error);
             });
+
+            self.setState({ markers: tempMarkers });
+        });
     }
 
     handleChanged(e) {
