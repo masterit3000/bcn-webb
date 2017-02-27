@@ -1,0 +1,7 @@
+
+@media (min-width: 992px){
+    .right-align-menu{
+    position: absolute !important;
+    right: 15px;
+    }
+}

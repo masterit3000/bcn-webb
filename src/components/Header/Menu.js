@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import './menu.css';
 class Menu extends Component {
     render() {
         return (
@@ -37,6 +37,9 @@ class Menu extends Component {
                             </li>
                             <li>
                                 <a href="/Admins">Danh sách người dùng</a>
+                            </li>
+                            <li className="right-align-menu">
+                                <a href="/Downloads">Tài nguyên</a>
                             </li>
                         </ul>
                     </div>

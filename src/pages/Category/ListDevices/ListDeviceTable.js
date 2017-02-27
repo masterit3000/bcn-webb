@@ -76,7 +76,6 @@ class ListDeviceTable extends React.Component {
     render() {
         var devices = this.props.devices;
         const options = {
-            afterDeleteRow: onAfterDeleteRow,
             deleteText: 'Xóa',
             insertBtn: this.createCustomInsertButton
         };

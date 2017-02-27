@@ -13,6 +13,7 @@ import Admins from './pages/Category/ManageAdmins/Admins';
 import FireHistory from './pages/FireHistory/FireHistory';
 import ListAndroidDevices from './pages/Category/ListAndroidDevices/ListAndroidDevices';
 import Areas from './pages/Category/Areas/Areas';
+import Downloads from './pages/Downloads/Downloads';
 
 ReactDOM.render(
   <IntlProvider locale="vi" messages={generatedMessages.translationMessages.vi}>
@@ -24,6 +25,7 @@ ReactDOM.render(
         <Route path="/FireHistory" component={FireHistory} />
         <Route path="/ListAndroidDevices" component={ListAndroidDevices} />
         <Route path="/Area" component={Areas} />
+         <Route path="/Downloads" component={Downloads} />
       </Route>
       <Route path="/Login" component={Login}>
       </Route>

@@ -6,6 +6,8 @@ import SearchBox from "react-google-maps/lib/places/SearchBox";
 import './InsertModalStyle.css';
 import axios from 'axios';
 import _ from 'lodash';
+import TableSMS from './TableSMS';
+import ListDevicesStores from './ListDevicesStores';
 
 /* global google */
 //SearchBox style
@@ -169,7 +171,7 @@ class InsertModal extends Component {
     loadUnusedImeiCombobox() {
         var self = this;
         var token = localStorage.getItem('token');
-        
+
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
             timeout: Config.RequestTimeOut,
@@ -294,51 +296,72 @@ class InsertModal extends Component {
 							        </div>
                                 </div>
                                 <div className="portlet-body">
+                                    <div className="tabbable-line">
+                                        <ul className="nav nav-tabs ">
+                                            <li className="active">
+                                                <a href="#tab_15_1" data-toggle="tab">
+                                                    Thông tin</a>
+                                            </li>
+                                            <li>
+                                                <a href="#tab_15_2" data-toggle="tab">
+                                                    SMS Báo cháy</a>
+                                            </li>
+                                        </ul>
+                                        <div className="tab-content">
+                                            <div className="tab-pane active" id="tab_15_1">
+                                                {/*Start Tab 1*/}
+                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                    <div className="input-group right-addon">
+                                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtDeviceId" name="txtDeviceId" />
+                                                        <label htmlFor="idTxtDeviceId">Device Id</label>
+                                                        <span className="input-group-addon">
+                                                            <i className="fa fa-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-                                    <div className="form-group form-md-line-input form-md-floating-label">
-                                        <div className="input-group right-addon">
-                                            <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtDeviceId" name="txtDeviceId" />
-                                            <label htmlFor="idTxtDeviceId">Device Id</label>
-                                            <span className="input-group-addon">
-                                                <i className="fa fa-check"></i>
-                                            </span>
+                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
+                                                    <label htmlFor="idtxtName">Tên tủ báo cháy</label>
+                                                </div>
+                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
+                                                    <label htmlFor="idtxtAddress">Địa chỉ</label>
+                                                </div>
+                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtPhone" name="txtPhone" />
+                                                    <label htmlFor="idtxtPhone">Số điện thoại</label>
+                                                </div>
+                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
+                                                    <label htmlFor="idtxtDesc">Mô tả</label>
+                                                </div>
+                                                <div className="form-group form-md-line-input form-md">
+                                                    <select onChange={this.handleChanged} className="form-control" id="idSelectArea" name="selectArea" >
+                                                        {optionsAreas}
+                                                    </select>
+                                                    <label htmlFor="idSelectArea">Khu vực</label>
+                                                </div>
+                                                <div className="form-group form-md-line-input form-md">
+                                                    <select onChange={this.handleChanged} className="form-control" id="idSelectPhone" name="selectPhone" >
+                                                        {options}
+                                                    </select>
+                                                    <label htmlFor="idSelectPhone">Kết Nối điện thoại</label>
+                                                </div>
+                                                {/*End Tab 1*/}
+                                            </div>
+                                            {/* Tab 2 DS SO di dong nhan tin sms khi co bao chay*/}
+                                            <div className="tab-pane" id="tab_15_2">
+                                                <h4> Danh sách số di động nhận SMS khi có báo cháy</h4>
+                                                <TableSMS store={ListDevicesStores} />
+                                            </div>
+                                            {/*END DS SO di dong nhan tin sms*/}
                                         </div>
                                     </div>
-
-                                    <div className="form-group form-md-line-input form-md-floating-label">
-                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
-                                        <label htmlFor="idtxtName">Tên tủ báo cháy</label>
-                                    </div>
-                                    <div className="form-group form-md-line-input form-md-floating-label">
-                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
-                                        <label htmlFor="idtxtAddress">Địa chỉ</label>
-                                    </div>
-                                    <div className="form-group form-md-line-input form-md-floating-label">
-                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtPhone" name="txtPhone" />
-                                        <label htmlFor="idtxtPhone">Số điện thoại</label>
-                                    </div>
-                                    <div className="form-group form-md-line-input form-md-floating-label">
-                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
-                                        <label htmlFor="idtxtDesc">Mô tả</label>
-                                    </div>
-                                    <div className="form-group form-md-line-input form-md">
-                                        <select onChange={this.handleChanged} className="form-control" id="idSelectArea" name="selectArea" >
-                                            {optionsAreas}
-                                        </select>
-                                        <label htmlFor="idSelectArea">Khu vực</label>
-                                    </div>
-                                    <div className="form-group form-md-line-input form-md">
-                                        <select onChange={this.handleChanged} className="form-control" id="idSelectPhone" name="selectPhone" >
-                                            {options}
-                                        </select>
-                                        <label htmlFor="idSelectPhone">Kết Nối điện thoại</label>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={this.onSave} bsStyle="success"> <i className="fa fa-plus" aria-hidden="true"></i>Thêm mới</Button>
