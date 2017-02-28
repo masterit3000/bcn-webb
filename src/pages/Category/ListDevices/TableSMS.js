@@ -6,17 +6,19 @@ class TableSMS extends Component {
 
     constructor(props) {
         super(props);
+        
         this.state = { sms: [], currentIndex: 1 };
     };
 
     handleInsertButtonClick(e) {
-        var arr = this.state.sms;
-        var currentIndex = this.state.currentIndex;
-        var newRow = { id: currentIndex, phoneNo: "", name: "" };
-        arr.push(newRow);
-        this.setState({ sms: arr });
-        var nextIndex = currentIndex + 1;
-        this.setState({ currentIndex: nextIndex });
+        // var arr = this.state.sms;
+        // var currentIndex = this.state.currentIndex;
+        // var newRow = { id: currentIndex, phoneNo: "", name: "" };
+        // arr.push(newRow);
+        // this.setState({ sms: arr });
+        // var nextIndex = currentIndex + 1;
+        // this.setState({ currentIndex: nextIndex });
+        
     }
 
     createCustomInsertButton = (onClick) => {
@@ -31,9 +33,9 @@ class TableSMS extends Component {
     }
 
     render() {
-        const { todos } = this.props.store;
-
-
+        
+        const { sms } = this.props.store;
+       
         const options = {
             deleteText: 'Xóa',
             insertBtn: this.createCustomInsertButton
@@ -52,9 +54,9 @@ class TableSMS extends Component {
             <BootstrapTable
                 insertRow={true}
                 deleteRow={true}
-                data={this.state.sms}
+                data={sms}
                 selectRow={selectRowProp}
-                height='420'
+                height='420px'
                 cellEdit={cellEditProp}
                 options={options}
             >

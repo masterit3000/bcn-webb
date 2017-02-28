@@ -353,7 +353,7 @@ class InsertModal extends Component {
                                             {/* Tab 2 DS SO di dong nhan tin sms khi co bao chay*/}
                                             <div className="tab-pane" id="tab_15_2">
                                                 <h4> Danh sách số di động nhận SMS khi có báo cháy</h4>
-                                                <TableSMS store={ListDevicesStores} />
+                                                <TableSMS store={new ListDevicesStores()} />
                                             </div>
                                             {/*END DS SO di dong nhan tin sms*/}
                                         </div>
