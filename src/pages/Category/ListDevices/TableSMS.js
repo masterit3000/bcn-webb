@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
 import { observer } from 'mobx-react';
+import mobx from 'mobx';
+
 
 class TableSMS extends Component {
 
     constructor(props) {
         super(props);
-        
-        this.state = { sms: [], currentIndex: 1 };
+        this.onAfterUpdateCell = this.onAfterUpdateCell.bind(this);
     };
 
     handleInsertButtonClick(e) {
-        // var arr = this.state.sms;
-        // var currentIndex = this.state.currentIndex;
-        // var newRow = { id: currentIndex, phoneNo: "", name: "" };
-        // arr.push(newRow);
-        // this.setState({ sms: arr });
-        // var nextIndex = currentIndex + 1;
-        // this.setState({ currentIndex: nextIndex });
-        
+        this.props.store.add();
+    }
+
+    onAfterUpdateCell(row, cellName, cellValue) {
+        this.props.store.update(row, cellName, cellValue);
     }
 
     createCustomInsertButton = (onClick) => {
@@ -33,9 +31,10 @@ class TableSMS extends Component {
     }
 
     render() {
-        
-        const { sms } = this.props.store;
-       
+
+        const { sms, currentIndex } = this.props.store;
+        var smsClone = mobx.toJS(sms);
+
         const options = {
             deleteText: 'Xóa',
             insertBtn: this.createCustomInsertButton
@@ -47,14 +46,15 @@ class TableSMS extends Component {
 
         const cellEditProp = {
             mode: 'click',
-            blurToSave: true
+            blurToSave: true,
+            afterSaveCell: this.onAfterUpdateCell
         };
 
         return (
             <BootstrapTable
                 insertRow={true}
                 deleteRow={true}
-                data={sms}
+                data={smsClone}
                 selectRow={selectRowProp}
                 height='420px'
                 cellEdit={cellEditProp}
@@ -74,4 +74,4 @@ class TableSMS extends Component {
     }
 }
 
-export default TableSMS;
+export default observer(TableSMS);

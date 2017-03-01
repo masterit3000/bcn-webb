@@ -147,7 +147,7 @@ class AdminTable extends Component {
                     Email
                     </TableHeaderColumn>
                 <TableHeaderColumn dataField={keyTableName} dataFormat={this.cellButton.bind(this)}>
-                    Theo dõi
+                    Khu vực theo dõi
                     </TableHeaderColumn>
             </BootstrapTable>
 

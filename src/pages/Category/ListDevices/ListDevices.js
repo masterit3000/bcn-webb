@@ -42,10 +42,8 @@ class ListDevices extends Component {
         });
     }
 
-
     componentWillMount() {
         this.loadData();
-
     }
 
     render() {

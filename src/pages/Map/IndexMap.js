@@ -15,6 +15,7 @@ import offlineMarker from './offline-marker.png';
 import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';
+import DeviceLogModal from './DeviceLogModal';
 
 /* global google */
 const TOAST_ERROR = 1;
@@ -92,6 +93,17 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
                             <li className="list-group-item" style={listGroupItemStyle}>
                                 <i className="fa fa-phone-square"></i>{marker.phone}
                             </li>
+                            <li className="list-group-item" style={listGroupItemStyle}>
+                                <i className="fa fa-bolt" aria-hidden="true"></i>
+                                {marker.powerCordState}
+                            </li>
+                            <li className="list-group-item" style={listGroupItemStyle}>
+                                <i className="fa fa-headphones" aria-hidden="true"></i>
+                                {marker.headSetState}
+                            </li>
+                            <li>
+                                <button onClick={props.onBtnInfoClick} data-markerId={marker.markerId} className="btn btn-success btn-view-log">Xem log</button>
+                            </li>
                         </ul>
                     </InfoWindow>
                 )}
@@ -108,14 +120,17 @@ class IndexMap extends Component {
         this.state = {
             bounds: null,
             showModal: false,
+            showLogModal: false,
             modalContent: '',
             listDevices: [],
             markers: [],
             markerPlace: [],
+            deviceLog: [],
             fireHistoryId: '',
             center: { lat: 21.028952, lng: 105.852394 },
         };
         this.close = this.close.bind(this);
+        this.closeLogModal = this.closeLogModal.bind(this);
         this.handleMarkerClick = this.handleMarkerClick.bind(this);
         this.handleMarkerClose = this.handleMarkerClose.bind(this);
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
@@ -124,6 +139,55 @@ class IndexMap extends Component {
         this.handleBoundsChanged = this.handleBoundsChanged.bind(this);
         this.handleChanged = this.handleChanged.bind(this);
         this.showToast = this.showToast.bind(this);
+        this.handleOnBtnInfoClick = this.handleOnBtnInfoClick.bind(this);
+        this.logConnected = this.logConnected.bind(this);
+        this.logDisconnected = this.logDisconnected.bind(this);
+    }
+
+    logDisconnected(markerId) {
+        //save log
+        var self = this;
+        var token = localStorage.getItem('token');
+        var json = {}
+        json.markerId = markerId;
+        json.logType = "Trạng thái";
+        json.logDesc = "Đã bị ngắt kết nối (Disconnected)";
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.post('/DeviceRoute/InsertDeviceLogFromWeb', json).then(function (response) {
+            self.setState({ datas: response.data.data });
+        });
+        //end save log
+    }
+
+    logConnected(markerId) {
+        //save log
+        var self = this;
+        var token = localStorage.getItem('token');
+        var json = {}
+        json.markerId = markerId;
+        json.logType = "Trạng thái";
+        json.logDesc = "Đã kết nối (Connected)";
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.post('/DeviceRoute/InsertDeviceLogFromWeb', json).then(function (response) {
+            self.setState({ datas: response.data.data });
+        });
+        //end save log
     }
 
     componentDidMount() {
@@ -160,7 +224,7 @@ class IndexMap extends Component {
                             return marker;
                         }),
                     });
-                    
+
                     return false;
                 }
             });
@@ -173,6 +237,8 @@ class IndexMap extends Component {
                 markers: self.state.markers.map(marker => {
                     if (_.isEqual(marker.markerId, data)) {
                         self.showToast(TOAST_INFO, marker.name, 'Đã kết nối!');
+                        self.logConnected(marker.markerId);
+
                         return {
                             ...marker,
                             icon: normalMarker,
@@ -191,7 +257,7 @@ class IndexMap extends Component {
                 markers: self.state.markers.map(marker => {
                     if (_.isEqual(marker.markerId, data)) {
                         self.showToast(TOAST_WARNING, marker.name, 'Đã bị ngắt kết nối!');
-
+                        self.logDisconnected(marker.markerId);
                         return {
                             ...marker,
                             icon: offlineMarker,
@@ -216,7 +282,6 @@ class IndexMap extends Component {
         instance.get('/MainMap/ListDevices').then(function (response) {
             self.setState({ listDevices: response.data.data });
 
-
             var tempMarkers = [];
             _.forEach(response.data.data, function (device) {
                 var markerIcon = offlineMarker;
@@ -235,7 +300,9 @@ class IndexMap extends Component {
                     phone: device.phone,
                     icon: markerIcon,
                     animation: device.isFire ? 1 : 4,
-                    showInfo: false
+                    showInfo: false,
+                    powerCordState: device.powerCordState ? "Đang cắm sạc" : "Chưa cắm sạc",
+                    headSetState: device.headSetState ? "Dây tai nghe đang cắm" : "Chưa cắm dây tai nghe"
                 });
             });
 
@@ -321,6 +388,35 @@ class IndexMap extends Component {
         instance.post('/Common/UpdateDataById', obj).then(function (response) {
         });
         this.setState({ showModal: false });
+    }
+
+    //On Btn Log inside marker clicked
+    handleOnBtnInfoClick(e) {
+        //
+        this.setState({ deviceLog: [] });
+        var markerId = e.target.getAttribute('data-markerId');
+
+        var self = this;
+        var token = localStorage.getItem('token');
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+
+        instance.get('/DeviceRoute/GetDeviceLogs/' + markerId).then(function (response) {
+            self.setState({ deviceLog: response.data.data, showLogModal: true });
+        });
+
+    }
+
+    //close the log modal
+    closeLogModal() {
+        this.setState({ showLogModal: false });
     }
 
     showToast(type, title, content) {
@@ -420,6 +516,8 @@ class IndexMap extends Component {
                     <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
                 </ToastContainer>
 
+                <DeviceLogModal logs={this.state.deviceLog} show={this.state.showLogModal} onHide={this.closeLogModal} />
+
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
 
@@ -445,6 +543,7 @@ class IndexMap extends Component {
                             onPlacesChanged={this.handlePlacesChanged}
                             onMarkerClick={this.handleMarkerClick}
                             onMarkerClose={this.handleMarkerClose}
+                            onBtnInfoClick={this.handleOnBtnInfoClick}
                         />
 
                     </div>

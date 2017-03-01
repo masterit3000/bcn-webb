@@ -8,6 +8,8 @@ import axios from 'axios';
 import _ from 'lodash';
 import TableSMS from './TableSMS';
 import ListDevicesStores from './ListDevicesStores';
+import { observer } from 'mobx-react';
+import mobx from 'mobx';
 
 /* global google */
 //SearchBox style
@@ -25,6 +27,8 @@ const INPUT_STYLE = {
     outline: 'none',
     textOverflow: 'ellipses',
 };
+
+var listDevicesStores;
 
 //Render marker
 const GettingStartedGoogleMap = withGoogleMap(props => (
@@ -70,6 +74,7 @@ class InsertModal extends Component {
             imeis: [],
             areas: []
         };
+        listDevicesStores = new ListDevicesStores();
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
         this.handleSearchBoxMounted = this.handleSearchBoxMounted.bind(this);
         this.handleMapMounted = this.handleMapMounted.bind(this);
@@ -81,10 +86,15 @@ class InsertModal extends Component {
         this.loadUnusedImeiCombobox = this.loadUnusedImeiCombobox.bind(this);
         this.loadAreas = this.loadAreas.bind(this);
     }
+
     onModalBtnCloseClicked(event) {
         this.props.onHide();
     }
+
     onSave(event) {
+        //Danh sach gui tin sms
+        var sms = mobx.toJS(listDevicesStores.sms);
+
         var self = this;
         var postJson = {
             markerId: this.state.txtDeviceId,
@@ -96,7 +106,8 @@ class InsertModal extends Component {
             imei: this.state.selectPhone,
             desc: this.state.txtDesc,
             area: this.state.selectArea,
-            areaName: this.state.selectAreaName
+            areaName: this.state.selectAreaName,
+            sms: sms
         };
 
         var instance = axios.create({
@@ -112,6 +123,7 @@ class InsertModal extends Component {
                     self.loadUnusedImeiCombobox();
                     self.props.onHide();
                     self.props.loadDataParent();
+                    listDevicesStores.reset();
                 } else {
                     self.setState({ modalIsError: true, modalIsErrorText: 'Lỗi không thể thêm mới dữ liệu' });
                 }
@@ -166,6 +178,7 @@ class InsertModal extends Component {
     componentWillMount() {
         this.loadUnusedImeiCombobox();
         this.loadAreas();
+
     }
 
     loadUnusedImeiCombobox() {
@@ -353,7 +366,7 @@ class InsertModal extends Component {
                                             {/* Tab 2 DS SO di dong nhan tin sms khi co bao chay*/}
                                             <div className="tab-pane" id="tab_15_2">
                                                 <h4> Danh sách số di động nhận SMS khi có báo cháy</h4>
-                                                <TableSMS store={new ListDevicesStores()} />
+                                                <TableSMS store={listDevicesStores} />
                                             </div>
                                             {/*END DS SO di dong nhan tin sms*/}
                                         </div>
@@ -372,4 +385,4 @@ class InsertModal extends Component {
     }
 }
 
-export default InsertModal;
+export default observer(InsertModal);

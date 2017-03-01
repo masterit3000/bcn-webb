@@ -1,5 +1,7 @@
 
 import { extendObservable, computed } from 'mobx';
+import mobx from 'mobx';
+import _ from 'lodash';
 
 class ListDevicesStores {
   constructor() {
@@ -10,8 +12,25 @@ class ListDevicesStores {
   }
 
   add() {
-    var increaseIndex = this.currentIndex + 1;
-    this.sms.push({ id: increaseIndex, phoneNo: "09022", name: "ten" });
+    var clone = mobx.toJS(this.sms);
+    clone.push({ id: this.currentIndex, phoneNo: "", name: "" });
+    this.sms.replace(clone);
+    this.currentIndex++;
+  }
+
+  update(row, cellName, cellValue) {
+    var clone = mobx.toJS(this.sms);
+    _.forEach(clone, function (value) {
+      if (_.isEqual(value.id, row.id)) {
+        value[cellName] = cellValue;
+      }
+    });
+    this.sms.replace(clone);
+  }
+
+  reset(){
+    this.sms.replace([]);
+    this.currentIndex = 1;
   }
 
 }
