@@ -10,8 +10,6 @@ import SearchBox from "react-google-maps/lib/places/SearchBox";
 import fireMarker from './fire.png';
 import normalMarker from './normal-marker.png';
 import offlineMarker from './offline-marker.png';
-// import { bounce } from 'react-animations';
-// import { StyleSheet, css } from 'aphrodite';
 import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';

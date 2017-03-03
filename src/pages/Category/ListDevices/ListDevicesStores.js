@@ -6,8 +6,19 @@ import _ from 'lodash';
 class ListDevicesStores {
   constructor() {
     extendObservable(this, {
-      sms: [],
-      currentIndex: 1
+      sms: [
+        { id: 1, phoneNo: "", name: "" },
+        { id: 2, phoneNo: "", name: "" },
+        { id: 3, phoneNo: "", name: "" },
+        { id: 4, phoneNo: "", name: "" },
+        { id: 5, phoneNo: "", name: "" },
+        { id: 6, phoneNo: "", name: "" },
+        { id: 7, phoneNo: "", name: "" },
+        { id: 8, phoneNo: "", name: "" },
+        { id: 9, phoneNo: "", name: "" },
+        { id: 10, phoneNo: "", name: "" }
+      ],
+      currentIndex: 11
     });
   }
 
@@ -28,9 +39,21 @@ class ListDevicesStores {
     this.sms.replace(clone);
   }
 
-  reset(){
-    this.sms.replace([]);
-    this.currentIndex = 1;
+  reset() {
+    this.sms.replace([
+      { id: 1, phoneNo: "", name: "" },
+      { id: 2, phoneNo: "", name: "" },
+      { id: 3, phoneNo: "", name: "" },
+      { id: 4, phoneNo: "", name: "" },
+      { id: 5, phoneNo: "", name: "" },
+      { id: 6, phoneNo: "", name: "" },
+      { id: 7, phoneNo: "", name: "" },
+      { id: 8, phoneNo: "", name: "" },
+      { id: 9, phoneNo: "", name: "" },
+      { id: 10, phoneNo: "", name: "" }
+
+    ]);
+    this.currentIndex = 11;
   }
 
 }

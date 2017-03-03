@@ -17,7 +17,7 @@ function GenNested(props) {
                             <div className="dd-handle">
                                 {area.id} - {area.name}
                                 <i className="fa fa-times pull-right font-red" data-id={area.id} title="Xóa" aria-hidden="true" onClick={props.onBtnDeleteClicked}></i>
-                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
+                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
                                 <i className="fa fa-plus pull-right font-blue" data-id={area.id} title="Thêm mới" aria-hidden="true" onClick={props.onBtnAddClicked}></i>
                             </div>
                         </li>);
@@ -27,7 +27,7 @@ function GenNested(props) {
                             <div className="dd-handle">
                                 {area.id} - {area.name}
                                 <i className="fa fa-times pull-right font-red" data-id={area.id} title="Xóa" aria-hidden="true" onClick={props.onBtnDeleteClicked}></i>
-                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
+                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
                                 <i className="fa fa-plus pull-right font-blue" data-id={area.id} title="Thêm mới" aria-hidden="true" onClick={props.onBtnAddClicked}></i>
                             </div>
                             <ol className="dd-list">
@@ -63,7 +63,10 @@ class NestedList extends Component {
     onBtnEditClicked(e) {
         var id = e.target.getAttribute('data-id');
         var name = e.target.getAttribute('data-name');
-        this.props.onBtnChildEditClicked(id, name);
+        var latitude = e.target.getAttribute('data-latitude');
+        var longitude = e.target.getAttribute('data-longitude');
+        
+        this.props.onBtnChildEditClicked(id, name, latitude, longitude);
     }
 
     onBtnDeleteClicked(e) {
