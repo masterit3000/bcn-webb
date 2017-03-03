@@ -3,12 +3,21 @@ import PageHead from '../../PageHead';
 import NestedList from './NestedList';
 import InsertModal from './InsertModal';
 import UpdateModal from './UpdateModal';
+import AreaStores from './AreaStores';
+
+var areaStores;
 
 class Areas extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { showInsertModal: false, showEditModal: false, isNewParent: false, insertParentId: 0 };
+        this.state = {
+            showInsertModal: false,
+            showEditModal: false,
+            isNewParent: false,
+            insertParentId: 0
+        };
+        areaStores = new AreaStores();
         this.onBtnAddClicked = this.onBtnAddClicked.bind(this);
         this.closeInsertModal = this.closeInsertModal.bind(this);
         this.onBtnChildAddClicked = this.onBtnChildAddClicked.bind(this);
@@ -24,8 +33,16 @@ class Areas extends Component {
         this.setState({ showInsertModal: true, isNewParent: false, insertParentId: id });
     }
 
-    onBtnChildEditClicked(id, updateName) {
-        this.setState({ showEditModal: true, updateId: id, updateName: updateName });
+    onBtnChildEditClicked(id, updateName, latitude, longitude) {
+        areaStores.update(id, updateName, latitude, longitude);
+
+        this.setState({
+            showEditModal: true,
+            updateId: id,
+            updateName: updateName,
+            updateLatitude: latitude,
+            updateLongitude: longitude
+        });
     }
 
     closeInsertModal() {
@@ -43,7 +60,7 @@ class Areas extends Component {
 
             //BEGIN PAGE CONTAINER 
             <div className="page-container">
-                <UpdateModal title="Sửa khu vực" show={this.state.showEditModal} updateId={this.state.updateId} updateName={this.state.updateName} onHide={this.closeUpdateModal} />
+                <UpdateModal title="Sửa khu vực" show={this.state.showEditModal} stores={areaStores} updateId={this.state.updateId} updateName={this.state.updateName} updateLatitude={this.state.updateLatitude} updateLongitude={this.state.updateLongitude} onHide={this.closeUpdateModal} />
                 <InsertModal title="Thêm mới khu vực" show={this.state.showInsertModal} isNewParent={this.state.isNewParent} onHide={this.closeInsertModal} parentId={this.state.insertParentId} />
                 <PageHead title="Quản lý" subTitle="Danh sách khu vực" />
                 <div className="page-content">
