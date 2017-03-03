@@ -168,8 +168,7 @@ class UpdateModal extends Component {
 
         var lastLatitude = Number(mobx.toJS(stores.updateLatitude));
         var lastLongitude = Number(mobx.toJS(stores.updateLongitude));
-        console.log(lastLatitude);
-        console.log(lastLongitude);
+     
         var lastMarkerPlace = {
             position: { lat: lastLatitude, lng: lastLongitude },
             key: Date.now,

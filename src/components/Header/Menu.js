@@ -38,6 +38,9 @@ class Menu extends Component {
                             <li>
                                 <a href="/Admins">Danh sách người dùng</a>
                             </li>
+                            <li>
+                                <a href="/SysLog">Nhật ký hệ thống</a>
+                            </li>
                             <li className="right-align-menu">
                                 <a href="/Downloads">Tài nguyên</a>
                             </li>
