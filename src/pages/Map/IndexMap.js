@@ -14,6 +14,7 @@ import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';
 import DeviceLogModal from './DeviceLogModal';
+import Autosuggest from 'react-autosuggest';
 
 /* global google */
 const TOAST_ERROR = 1;
@@ -23,6 +24,30 @@ const TOAST_WARNING = 4;
 
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 let socket = io(Config.SocketUrl);
+
+var listDevicesAutoCorrects = [];
+
+// Teach Autosuggest how to calculate suggestions for any given input value.
+const getSuggestions = value => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+
+    return inputLength === 0 ? [] : listDevicesAutoCorrects.filter(item =>
+        item.name.toLowerCase().slice(0, inputLength) === inputValue
+    );
+};
+
+// When suggestion is clicked, Autosuggest needs to populate the input element
+// based on the clicked suggestion. Teach Autosuggest how to calculate the
+// input value for every given suggestion.
+const getSuggestionValue = suggestion => suggestion.markerId + " - " + suggestion.name;
+
+// Use your imagination to render suggestions.
+const renderSuggestion = suggestion => (
+    <div>
+        {suggestion.markerId} - {suggestion.name}
+    </div>
+);
 
 //SearchBox style
 const INPUT_STYLE = {
@@ -58,7 +83,7 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
             bounds={props.bounds}
             controlPosition={google.maps.ControlPosition.TOP_LEFT}
             onPlacesChanged={props.onPlacesChanged}
-            inputPlaceholder="Tìm kiếm"
+            inputPlaceholder="Tìm kiếm địa điểm"
             inputStyle={INPUT_STYLE}
         />
         {props.markerPlace.map((marker, index) => (
@@ -126,6 +151,8 @@ class IndexMap extends Component {
             deviceLog: [],
             fireHistoryId: '',
             center: { lat: 21.028952, lng: 105.852394 },
+            value: '', //for suggestion
+            suggestions: []
         };
         this.close = this.close.bind(this);
         this.closeLogModal = this.closeLogModal.bind(this);
@@ -140,7 +167,47 @@ class IndexMap extends Component {
         this.handleOnBtnInfoClick = this.handleOnBtnInfoClick.bind(this);
         this.logConnected = this.logConnected.bind(this);
         this.logDisconnected = this.logDisconnected.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     }
+    onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
+        this.setState({ center: { lat: suggestion.lat, lng: suggestion.long } });
+    }
+
+    //Suggestion on change
+    onChange = (event, { newValue }) => {
+        var self = this;
+        this.setState({
+            value: newValue
+        }, () => {
+            // var splitedId = _.split(this.state.value, ' - ', 1); // split the string and get marker Id
+            // //Find marker id location
+            // _.forEach(this.state.markers, function (marker) {
+            //     console.log(marker);
+            //     if (_.isEqual(marker.markerId, splitedId)) {
+            //         console.log(marker);
+
+            //     }
+            // });
+        });
+    };
+
+    // Autosuggest will call this function every time you need to update suggestions.
+    // You already implemented this logic above, so just use it.
+    onSuggestionsFetchRequested = ({ value }) => {
+        this.setState({
+            suggestions: getSuggestions(value)
+        });
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
 
     logDisconnected(markerId) {
         //save log
@@ -279,6 +346,8 @@ class IndexMap extends Component {
         });
         instance.get('/MainMap/ListDevices').then(function (response) {
             self.setState({ listDevices: response.data.data });
+
+            listDevicesAutoCorrects = response.data.data;
 
             var tempMarkers = [];
             _.forEach(response.data.data, function (device) {
@@ -487,6 +556,16 @@ class IndexMap extends Component {
             flex: 1,
             height: '800px'
         };
+
+        const { value, suggestions } = this.state;
+
+        // Autosuggest will pass through all these props to the input element.
+        const inputProps = {
+            placeholder: 'Tìm kiếm địa điểm tủ báo cháy',
+            value,
+            onChange: this.onChange
+        };
+
         return (
             //BEGIN PAGE CONTAINER 
             <div className="page-container">
@@ -518,6 +597,15 @@ class IndexMap extends Component {
 
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
+                        <Autosuggest
+                            suggestions={suggestions}
+                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            getSuggestionValue={getSuggestionValue}
+                            renderSuggestion={renderSuggestion}
+                            inputProps={inputProps}
+                        />
 
                         {/*<!-- BEGIN PAGE CONTENT INNER -->*/}
                         <GettingStartedGoogleMap

@@ -15,6 +15,8 @@ import ListAndroidDevices from './pages/Category/ListAndroidDevices/ListAndroidD
 import Areas from './pages/Category/Areas/Areas';
 import Downloads from './pages/Downloads/Downloads';
 import SysLog from './pages/SysLog/SysLog';
+import Account from './pages/Account/Account';
+import ChangePassword from './pages/Account/ChangePassword';
 
 ReactDOM.render(
   <IntlProvider locale="vi" messages={generatedMessages.translationMessages.vi}>
@@ -26,8 +28,11 @@ ReactDOM.render(
         <Route path="/FireHistory" component={FireHistory} />
         <Route path="/ListAndroidDevices" component={ListAndroidDevices} />
         <Route path="/Area" component={Areas} />
-         <Route path="/SysLog" component={SysLog} />
+        <Route path="/SysLog" component={SysLog} />
         <Route path="/Downloads" component={Downloads} />
+        <Route path="/Account" component={Account} >
+          <Route path="ChangePassword" component={ChangePassword} />
+        </Route>
       </Route>
       <Route path="/Login" component={Login}>
       </Route>

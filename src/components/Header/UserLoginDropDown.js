@@ -13,34 +13,14 @@ class UserLoginDropDown extends Component {
                 </a>
                 <ul className="dropdown-menu dropdown-menu-default">
                     <li>
-                        <a href="extra_profile.html">
-                            <i className="icon-user"></i> My Profile </a>
-                    </li>
-                    <li>
-                        <a href="page_calendar.html">
-                            <i className="icon-calendar"></i> My Calendar </a>
-                    </li>
-                    <li>
-                        <a href="inbox.html">
-                            <i className="icon-envelope-open"></i> My Inbox <span className="badge badge-danger">
-                                3 </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i className="icon-rocket"></i> My Tasks <span className="badge badge-success">
-                                7 </span>
-                        </a>
+                        <a href="/Account">
+                            <i className="icon-user"></i>Tài khoản</a>
                     </li>
                     <li className="divider">
                     </li>
                     <li>
-                        <a href="extra_lock.html">
-                            <i className="icon-lock"></i> Lock Screen </a>
-                    </li>
-                    <li>
                         <a href="/Login">
-                            <i className="icon-key"></i> Log Out </a>
+                            <i className="icon-key"></i>Đăng xuất</a>
                     </li>
                 </ul>
             </li>
