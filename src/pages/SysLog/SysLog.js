@@ -11,7 +11,7 @@ class SysLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showInsertModal: true,
+            showInsertModal: false,
             logs: []
         }
     };

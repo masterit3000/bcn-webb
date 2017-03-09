@@ -13,11 +13,45 @@ class LoginContainer extends Component {
         localStorage.removeItem("name");
         localStorage.removeItem("avatar");
         localStorage.removeItem("memberSince");
-        this.state = { isValidated: true, username: '', password: '', errorText: '' };
+        this.state = {
+            isValidated: true, username: '', password: '', errorText: '',
+            isShowLoginForm: true, isShowForgetPasswordForm: false,
+            isResetPasswordSuccess: false,
+            isResetPasswordError: false, resetPasswordText: ''
+        };
         this.handleChange = this.handleChange.bind(this);
         this.login = this.login.bind(this);
+        this.showForgetPasswordForm = this.showForgetPasswordForm.bind(this);
+        this.forgetPasswordBackClicked = this.forgetPasswordBackClicked.bind(this);
+        this.forgetPasswordClicked = this.forgetPasswordClicked.bind(this);
+    }
+    forgetPasswordClicked(event) {
+        var self = this;
+        var json = {}
+        json.email = this.state.email;
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            }
+        });
+        instance.post('/Admin/ForgetPassword', json).then(function (response) {
+            if (response.data.ResponseCode === 0) {
+                self.setState({ isResetPasswordError: true, isResetPasswordSuccess: false, resetPasswordText: response.data.ResponseText });
+            } else {
+                self.setState({ isResetPasswordError: false, isResetPasswordSuccess: true, resetPasswordText: response.data.ResponseText });
+            }
+        });
+    }
+    showForgetPasswordForm(event) {
+        this.setState({ isShowForgetPasswordForm: true, isShowLoginForm: false });
     }
 
+    forgetPasswordBackClicked(event) {
+        this.setState({ isShowForgetPasswordForm: false, isShowLoginForm: true });
+    }
 
     handleChange(event) {
         var state = {};
@@ -49,7 +83,7 @@ class LoginContainer extends Component {
 
             instance.post('/Admin/Login', postJson)
                 .then(function (response) {
-                    
+
                     if (response.data.ResponseCode === 1) {
                         //Save jwt to localStorage
                         localStorage.setItem("token", response.data.token);
@@ -83,6 +117,22 @@ class LoginContainer extends Component {
             );
         }
 
+        function AlertSuccess(props) {
+            const alertSuccessClass = props.isResetPasswordSuccess ? "alert alert-success" : "alert alert-success display-hide";
+            return (<div className={alertSuccessClass}>
+                <strong>Thành công!</strong> {props.text}
+            </div>)
+        }
+
+        function AlertFail(props) {
+            const alertSuccessClass = props.isResetPasswordError ? "alert alert-warning" : "alert alert-warning display-hide";
+            return (<div className={alertSuccessClass}>
+                <strong>Lỗi!</strong> {props.text}
+            </div>)
+        }
+
+        const forgetFormClass = this.state.isShowForgetPasswordForm ? "forget-form" : "forget-form hidden";
+        const loginFormClass = this.state.isShowLoginForm ? "login-form" : "login-form hidden";
         return (
             <div className="page-md login login-s">
                 <div className="logo">
@@ -99,7 +149,7 @@ class LoginContainer extends Component {
                 {/*<!-- BEGIN LOGIN -->*/}
                 <div className="content content-s">
                     {/*<!-- BEGIN LOGIN FORM -->*/}
-                    <form className="login-form">
+                    <form className={loginFormClass}>
                         <h3 className="form-title">Đăng nhập</h3>
                         <Alert isValidated={this.state.isValidated} errorText={this.state.errorText} />
 
@@ -130,14 +180,38 @@ class LoginContainer extends Component {
                         <div className="forget-password">
                             <h4>Quên mật khẩu ?</h4>
                             <p>
-                                Ấn vào <a href="#" id="forget-password">
+                                Ấn vào <a href="#" onClick={this.showForgetPasswordForm} id="forget-password">
                                     đây </a>
                                 để lấy lại mật khẩu.
 			                </p>
                         </div>
-
                     </form>
                     {/*<!-- END LOGIN FORM -->*/}
+                    {/*<!-- BEGIN FORGOT PASSWORD FORM -->*/}
+                    <form className={forgetFormClass} >
+                        <AlertFail text={this.state.resetPasswordText} isResetPasswordError={this.state.isResetPasswordError} />
+                        <AlertSuccess text={this.state.resetPasswordText} isResetPasswordSuccess={this.state.isResetPasswordSuccess} />
+                        <h3>Quên mật khẩu ?</h3>
+                        <p>
+                            Nhập email của bạn tại đây để lấy lại mật khẩu.
+                            </p>
+                        <div className="form-group">
+                            <div className="input-icon">
+                                <i className="fa fa-envelope"></i>
+                                <input className="form-control placeholder-no-fix" type="text"
+                                    autoComplete="off" placeholder="Email" name="email" onChange={this.handleChange} />
+                            </div>
+                        </div>
+                        <div className="form-actions">
+                            <button type="button" id="back-btn" onClick={this.forgetPasswordBackClicked} className="btn">
+                                <i className="m-icon-swapleft"></i> Quay lại </button>
+                            <button type="button" onClick={this.forgetPasswordClicked} className="btn green-haze pull-right">
+                                Gửi <i className="m-icon-swapright m-icon-white"></i>
+                            </button>
+                        </div>
+                    </form>
+                    {/*<!-- END FORGOT PASSWORD FORM -->*/}
+
                 </div>
                 {/*<!-- END LOGIN -->*/}
                 {/*<!-- BEGIN COPYRIGHT -->*/}

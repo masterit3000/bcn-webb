@@ -8,11 +8,11 @@ class componentName extends Component {
         return (
             <div className="top-menu">
                 <ul className="nav navbar-nav pull-right">
-                    <NotificationDropDown />
+                    {/*<NotificationDropDown />*/}
                     <li className="droddown dropdown-separator">
                         <span className="separator"></span>
                     </li>
-                    <InboxDropDown />
+                    {/*<InboxDropDown />*/}
                     {/*<!-- BEGIN USER LOGIN DROPDOWN -->*/}
                     <UserLoginDropDown />
                     {/*<!-- END USER LOGIN DROPDOWN -->*/}

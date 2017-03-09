@@ -16,8 +16,8 @@ class UserLoginDropDown extends Component {
                         <a href="/Account">
                             <i className="icon-user"></i>Tài khoản</a>
                     </li>
-                    <li className="divider">
-                    </li>
+                    {/*<li className="divider">
+                    </li>*/}
                     <li>
                         <a href="/Login">
                             <i className="icon-key"></i>Đăng xuất</a>
