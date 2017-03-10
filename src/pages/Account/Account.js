@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PageHead from '../PageHead';
 import './account.css';
-
+import { Link } from 'react-router';
 class Account extends Component {
 
     render() {
@@ -37,14 +37,16 @@ class Account extends Component {
                                         <div className="profile-usermenu">
                                             <ul className="nav">
                                                 <li>
-                                                    <a href="/ManageAccount">
+                                                    <Link to="/ManageAccount">
                                                         <i className="fa fa-user"></i>
-                                                        Thông tin cá nhân </a>
+                                                        Thông tin cá nhân
+                                                    </Link>
                                                 </li>
                                                 <li>
-                                                    <a href="/Account/ChangePassword">
+                                                    <Link to="/Account/ChangePassword">
                                                         <i className="fa fa-key"></i>
-                                                        Thay đổi mật khẩu </a>
+                                                        Thay đổi mật khẩu
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </div>

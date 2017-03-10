@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 import './menu.css';
 class Menu extends Component {
     render() {
@@ -9,10 +10,10 @@ class Menu extends Component {
                     <div className="hor-menu">
                         <ul className="nav navbar-nav">
                             <li>
-                                <a href="/">Bản đồ</a>
+                                <Link to="/">Bản đồ</Link>
                             </li>
                             <li>
-                                <a href="/FireHistory">Lịch sử báo cháy</a>
+                                <Link to="/FireHistory">Lịch sử báo cháy</Link>
                             </li>
                             <li className="menu-dropdown classic-menu-dropdown">
                                 <a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="#">
@@ -20,29 +21,39 @@ class Menu extends Component {
                                 </a>
                                 <ul className="dropdown-menu pull-left">
                                     <li className="dropdown">
-                                        <a href="/ListDevices">
+                                        <Link to="/ListDevices">
                                             <i className="fa fa-fire"></i>&nbsp;
-                                            Tủ báo cháy </a>
-
+                                                Tủ báo cháy
+                                            </Link>
                                     </li>
                                     <li className="dropdown">
-                                        <a href="/ListAndroidDevices">
+                                        <Link to="/ListAndroidDevices">
+
                                             <i className="fa fa-mobile"></i>&nbsp;
-                                            Điện thoại </a>
+                                            Điện thoại
+                                             </Link>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="/Area">Quản lý khu vực</a>
+                                <Link to="/Area">
+                                    Quản lý khu vực
+                                </Link>
                             </li>
                             <li>
-                                <a href="/Admins">Danh sách người dùng</a>
+                                <Link to="/Admins">
+                                    Danh sách người dùng
+                                </Link>
                             </li>
                             <li>
-                                <a href="/SysLog">Nhật ký hệ thống</a>
+                                <Link to="/Admins">
+                                    Nhật ký hệ thống
+                                </Link>
                             </li>
                             <li className="right-align-menu">
-                                <a href="/Downloads">Tài nguyên</a>
+                                <Link to="/Downloads">
+                                    Tài nguyên
+                                </Link>
                             </li>
                         </ul>
                     </div>

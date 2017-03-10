@@ -72,9 +72,7 @@ class LoginContainer extends Component {
             isValidated = true;
         }
         if (isValidated) {
-            // var params = new URLSearchParams();
-            // params.append('username', username);
-            // params.append('password', password);
+
             var postJson = { username: username, password: password };
             var instance = axios.create({
                 baseURL: Config.ServiceUrl,

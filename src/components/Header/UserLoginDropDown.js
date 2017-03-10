@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 class UserLoginDropDown extends Component {
     render() {
@@ -13,14 +14,16 @@ class UserLoginDropDown extends Component {
                 </a>
                 <ul className="dropdown-menu dropdown-menu-default">
                     <li>
-                        <a href="/Account">
-                            <i className="icon-user"></i>Tài khoản</a>
+                        <Link to="/Account">
+                            <i className="icon-user"></i>Tài khoản
+                        </Link>
                     </li>
                     {/*<li className="divider">
                     </li>*/}
                     <li>
-                        <a href="/Login">
-                            <i className="icon-key"></i>Đăng xuất</a>
+                        <Link to="/Login">
+                            <i className="icon-key"></i>Đăng xuất
+                        </Link>
                     </li>
                 </ul>
             </li>

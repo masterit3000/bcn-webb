@@ -348,7 +348,6 @@ class IndexMap extends Component {
             //vi tri dau tien ma user theo doi ma he thong tim duoc
             var firstLoadLat = _.toNumber(response.data.lat);
             var firstLoadLong = _.toNumber(response.data.long);
-            console.log('lat: ' + firstLoadLat + " - lng: " + firstLoadLong);
             self.setState({ listDevices: response.data.data, center: { lat: firstLoadLat, lng: firstLoadLong } });
 
             listDevicesAutoCorrects = response.data.data;
