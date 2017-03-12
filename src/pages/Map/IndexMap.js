@@ -392,7 +392,7 @@ class IndexMap extends Component {
                     animation: device.isFire ? 1 : 4,
                     showInfo: false,
                     powerCordState: device.powerCordState ? "Đang cắm sạc" : "Chưa cắm sạc",
-                    headSetState: device.headSetState ? "Dây tai nghe đang cắm" : "Chưa cắm dây tai nghe"
+                    headSetState: device.headSetState ? "Đang cắm giắc tín hiệu" : "Chưa cắm giắc tín hiệu"
                 });
             });
 

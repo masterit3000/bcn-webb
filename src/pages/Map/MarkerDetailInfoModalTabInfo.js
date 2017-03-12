@@ -95,6 +95,20 @@ class MarkerDetailInfoModalTabInfo extends Component {
                         </div>
 
                     </li>
+                    <li className="list-group-item">
+                        <div className="row">
+                            <div className="col-md-2">
+                                Trạng thái giắc tín hiệu:
+                            </div>
+                            <div className="col-md-10">
+                                <b>{this.props.data.headSetState ?
+                                    <div className="font-blue">Đang cắm giắc tín hiệu</div> :
+                                    <div className="font-red">Chưa cắm giắc tín hiệu</div>}</b>
+                            </div>
+                        </div>
+
+                    </li>
+
                 </ul>
             </div>
         );
