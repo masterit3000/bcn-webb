@@ -194,7 +194,24 @@ class IndexMap extends Component {
 
     //Suggestion
     onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-        this.setState({ center: { lat: suggestion.lat, lng: suggestion.long } });
+        this.setState({ deviceLog: [] ,center: { lat: suggestion.lat, lng: suggestion.long } });
+        //Bat popup marker id da chon giong handleMarkerClick
+        var self = this;
+        var token = localStorage.getItem('token');
+        var json = {};
+        json.markerId = suggestion.markerId;
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.post('/DeviceRoute/GetMarkerById', json).then(function (response) {
+            self.setState({ markerDetailInfoModalData: response.data.data, showMarkerDetailLogModal: true });
+        });
     }
 
     //Suggestion on change
