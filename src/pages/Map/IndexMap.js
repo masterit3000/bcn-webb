@@ -14,7 +14,10 @@ import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';
 import DeviceLogModal from './DeviceLogModal';
+import MarkerDetailInfoModal from './MarkerDetailInfoModal';
 import Autosuggest from 'react-autosuggest';
+import MapStores from './MapStores';
+var mapStores;
 
 /* global google */
 const TOAST_ERROR = 1;
@@ -102,6 +105,8 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
                 options={{ optimized: false }}
                 animation={marker.animation}
                 position={marker.position}
+                onMouseOut={() => props.onMarkerMouseOut(marker)}
+                onMouseOver={() => props.onMarkerMouseOver(marker)}
                 onClick={() => props.onMarkerClick(marker)}
             >
                 {marker.showInfo && (
@@ -125,25 +130,27 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
                                 {marker.headSetState}
                             </li>
                             <li>
-                                <button onClick={props.onBtnInfoClick} data-markerId={marker.markerId} className="btn btn-success btn-view-log">Xem log</button>
+                                {/*<button onClick={props.onBtnViewLogClick} data-markerId={marker.markerId} className="btn btn-success btn-view-log">Xem log</button>
+                                <button onClick={props.onBtnInfoClick} data-markerId={marker.markerId} className="btn btn-info btn-view-log">Chi tiết</button>*/}
                             </li>
                         </ul>
                     </InfoWindow>
                 )}
             </Marker>
         ))}
-    </GoogleMap>
+    </GoogleMap >
 ));
 //Main map
 class IndexMap extends Component {
 
     constructor(props) {
         super(props);
-
+        mapStores = new MapStores();
         this.state = {
             bounds: null,
             showModal: false,
             showLogModal: false,
+            showMarkerDetailLogModal: false,
             modalContent: '',
             listDevices: [],
             markers: [],
@@ -152,10 +159,12 @@ class IndexMap extends Component {
             fireHistoryId: '',
             center: { lat: 21.028952, lng: 105.852394 },
             value: '', //for suggestion
-            suggestions: []
+            suggestions: [],
+            markerDetailInfoModalData: {}
         };
         this.close = this.close.bind(this);
         this.closeLogModal = this.closeLogModal.bind(this);
+        this.closeMarkerDetailLogModal = this.closeMarkerDetailLogModal.bind(this);
         this.handleMarkerClick = this.handleMarkerClick.bind(this);
         this.handleMarkerClose = this.handleMarkerClose.bind(this);
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
@@ -164,14 +173,17 @@ class IndexMap extends Component {
         this.handleBoundsChanged = this.handleBoundsChanged.bind(this);
         this.handleChanged = this.handleChanged.bind(this);
         this.showToast = this.showToast.bind(this);
-        this.handleOnBtnInfoClick = this.handleOnBtnInfoClick.bind(this);
         this.logConnected = this.logConnected.bind(this);
         this.logDisconnected = this.logDisconnected.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.handleMarkerOnMouseOut = this.handleMarkerOnMouseOut.bind(this);
+        this.handleMarkerOnMouseOver = this.handleMarkerOnMouseOver.bind(this);
     }
+
+    //Suggestion
     onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
         this.setState({ center: { lat: suggestion.lat, lng: suggestion.long } });
     }
@@ -182,15 +194,7 @@ class IndexMap extends Component {
         this.setState({
             value: newValue
         }, () => {
-            // var splitedId = _.split(this.state.value, ' - ', 1); // split the string and get marker Id
-            // //Find marker id location
-            // _.forEach(this.state.markers, function (marker) {
-            //     console.log(marker);
-            //     if (_.isEqual(marker.markerId, splitedId)) {
-            //         console.log(marker);
 
-            //     }
-            // });
         });
     };
 
@@ -348,6 +352,13 @@ class IndexMap extends Component {
             //vi tri dau tien ma user theo doi ma he thong tim duoc
             var firstLoadLat = _.toNumber(response.data.lat);
             var firstLoadLong = _.toNumber(response.data.long);
+            if (!firstLoadLat || !firstLoadLong) {
+                //Neu khong tim thay vi tri theo doi mac dinh chon marker dau tien
+                firstLoadLat = response.data.data[0].lat;
+                firstLoadLong = response.data.data[0].long;
+            }
+
+
             self.setState({ listDevices: response.data.data, center: { lat: firstLoadLat, lng: firstLoadLong } });
 
             listDevicesAutoCorrects = response.data.data;
@@ -387,16 +398,22 @@ class IndexMap extends Component {
     }
 
     handleMarkerClick(targetMarker) {
-        this.setState({
-            markers: this.state.markers.map(marker => {
-                if (marker === targetMarker) {
-                    return {
-                        ...marker,
-                        showInfo: true,
-                    };
-                }
-                return marker;
-            }),
+        this.setState({ deviceLog: [] });
+        var self = this;
+        var token = localStorage.getItem('token');
+        var json = {}
+        json.markerId = targetMarker.markerId;
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.post('/DeviceRoute/GetMarkerById', json).then(function (response) {
+            self.setState({ markerDetailInfoModalData: response.data.data, showMarkerDetailLogModal: true });
         });
     }
 
@@ -407,6 +424,34 @@ class IndexMap extends Component {
                     return {
                         ...marker,
                         showInfo: false,
+                    };
+                }
+                return marker;
+            }),
+        });
+    }
+
+    handleMarkerOnMouseOut(targetMarker) {
+        this.setState({
+            markers: this.state.markers.map(marker => {
+                if (marker === targetMarker) {
+                    return {
+                        ...marker,
+                        showInfo: false,
+                    };
+                }
+                return marker;
+            }),
+        });
+    }
+
+    handleMarkerOnMouseOver(targetMarker) {
+        this.setState({
+            markers: this.state.markers.map(marker => {
+                if (marker === targetMarker) {
+                    return {
+                        ...marker,
+                        showInfo: true,
                     };
                 }
                 return marker;
@@ -460,33 +505,16 @@ class IndexMap extends Component {
         this.setState({ showModal: false });
     }
 
-    //On Btn Log inside marker clicked
-    handleOnBtnInfoClick(e) {
-        //
-        this.setState({ deviceLog: [] });
-        var markerId = e.target.getAttribute('data-markerId');
 
-        var self = this;
-        var token = localStorage.getItem('token');
-        var instance = axios.create({
-            baseURL: Config.ServiceUrl,
-            timeout: Config.RequestTimeOut,
-            auth: {
-                username: Config.basicAuthUsername,
-                password: Config.basicAuthPassword
-            },
-            headers: { 'x-access-token': token }
-        });
-
-        instance.get('/DeviceRoute/GetDeviceLogs/' + markerId).then(function (response) {
-            self.setState({ deviceLog: response.data.data, showLogModal: true });
-        });
-
-    }
 
     //close the log modal
     closeLogModal() {
         this.setState({ showLogModal: false });
+    }
+
+    //Close the marker detail modal
+    closeMarkerDetailLogModal() {
+        this.setState({ showMarkerDetailLogModal: false });
     }
 
     showToast(type, title, content) {
@@ -532,18 +560,6 @@ class IndexMap extends Component {
 
     }
 
-    // toastr() {
-    //     this.refs.container.success('hi! Now is ', 'title', {
-    //         closeButton: true,
-    //     });
-    //     // this.refs.container.success(
-    //     //     "Welcome welcome welcome!!",
-    //     //     "You are now home my friend. Welcome home my friend.", {
-    //     //         timeOut: 30000,
-    //     //         extendedTimeOut: 10000
-    //     //     });
-    //     // window.open("http://youtu.be/3SR75k7Oggg");
-    // }
     render() {
         var styleContainer = {
             position: 'relative',
@@ -596,7 +612,8 @@ class IndexMap extends Component {
                     <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
                 </ToastContainer>
 
-                <DeviceLogModal logs={this.state.deviceLog} show={this.state.showLogModal} onHide={this.closeLogModal} />
+                {/*<DeviceLogModal logs={this.state.deviceLog} show={this.state.showLogModal} onHide={this.closeLogModal} />*/}
+                <MarkerDetailInfoModal show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} onHide={this.closeMarkerDetailLogModal} />
 
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
@@ -610,7 +627,6 @@ class IndexMap extends Component {
                             inputProps={inputProps}
                         />
 
-                        {/*<!-- BEGIN PAGE CONTENT INNER -->*/}
                         <GettingStartedGoogleMap
                             center={this.state.center}
                             containerElement={
@@ -632,7 +648,8 @@ class IndexMap extends Component {
                             onPlacesChanged={this.handlePlacesChanged}
                             onMarkerClick={this.handleMarkerClick}
                             onMarkerClose={this.handleMarkerClose}
-                            onBtnInfoClick={this.handleOnBtnInfoClick}
+                            onMarkerMouseOut={this.handleMarkerOnMouseOut}
+                            onMarkerMouseOver={this.handleMarkerOnMouseOver}
                         />
 
                     </div>

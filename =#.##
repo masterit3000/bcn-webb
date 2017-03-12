@@ -1,0 +1,21 @@
+pccc@0.1.0 /Users/ThanhND/Documents/PCCC/pccc/PCCC
+├── moment@2.17.1 
+├── react@15.4.2 
+├── react-addons-shallow-compare@15.4.2 
+├─┬ react-dates@8.1.1 
+│ ├── airbnb-prop-types@2.4.1 
+│ ├─┬ array-includes@3.0.2 
+│ │ ├─┬ define-properties@1.1.2 
+│ │ │ ├── foreach@2.0.5 
+│ │ │ └── object-keys@1.0.11 
+│ │ └─┬ es-abstract@1.7.0 
+│ │   ├─┬ es-to-primitive@1.1.1 
+│ │   │ ├── is-date-object@1.0.1 
+│ │   │ └── is-symbol@1.0.1 
+│ │   ├── is-callable@1.1.3 
+│ │   └── is-regex@1.0.4 
+│ ├── consolidated-events@1.0.1 
+│ ├── react-moment-proptypes@1.3.0 
+│ └── react-portal@3.0.0 
+└── react-dom@15.4.2 
+

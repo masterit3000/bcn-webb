@@ -4,19 +4,19 @@ import _ from 'lodash';
 import axios from 'axios';
 import { Config } from '../../Config';
 import FireHistoryTable from './FireHistoryTable';
-
+import FireHistoryChart from './FireHistoryChart';
 class FireHistory extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { fireHistoryData:  [] };
+        this.state = { fireHistoryData: [] };
         this.loadData = this.loadData.bind(this);
     }
 
     loadData() {
         var self = this;
         var token = localStorage.getItem('token');
-        
+
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
             timeout: Config.RequestTimeOut,
@@ -25,10 +25,10 @@ class FireHistory extends Component {
         instance.get('/FireHistory/GetFireHistory').then(function (response) {
             self.setState({ fireHistoryData: response.data.ResponseText });
         });
-       
+
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.loadData();
     }
 
@@ -55,12 +55,31 @@ class FireHistory extends Component {
                                         </div>
                                     </div>
                                     <div className="portlet-body">
-                                        <FireHistoryTable fireHistoryData={this.state.fireHistoryData} />
+                                        <div className="tabbable-line">
+                                            <ul className="nav nav-tabs ">
+                                                <li className="active">
+                                                    <a href="#tab1" data-toggle="tab">
+                                                        Bảng lịch sử </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#tab2" data-toggle="tab">
+                                                        Biểu đồ </a>
+                                                </li>
+                                            </ul>
+                                            <div className="tab-content">
+                                                <div className="tab-pane active" id="tab1">
+                                                    <FireHistoryTable fireHistoryData={this.state.fireHistoryData} />
+                                                </div>
+                                                <div className="tab-pane" id="tab2">
+                                                    <FireHistoryChart />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {/*<!-- END PAGE CONTENT INNER -->*/}
+                      
                     </div>
                 </div>
             </div>

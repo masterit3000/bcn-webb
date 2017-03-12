@@ -8,7 +8,7 @@
 
 .react-autosuggest__input{
     position: absolute;
-    z-index: 200;
+    z-index: 20;
     box-sizing: border-box;
     border: 1px solid transparent;
     width: 240px;

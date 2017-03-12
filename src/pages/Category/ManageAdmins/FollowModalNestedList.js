@@ -18,7 +18,7 @@ function GenNested(props) {
                                 {_.indexOf(props.follows, area.id) >= 0
                                     ? <i className="fa fa-check pull-right font-green" data-id={area.id} title="Chọn" aria-hidden="true" ></i> : ""
                                 }
-                                Follow: {props.follows} ID: {area.id}
+                                {/*Follow: {props.follows} ID: {area.id}*/}
                             </div>
                         </li>);
                 } else {
