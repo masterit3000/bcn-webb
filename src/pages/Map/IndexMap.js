@@ -35,8 +35,16 @@ const getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
+    console.log(listDevicesAutoCorrects);
+
     return inputLength === 0 ? [] : listDevicesAutoCorrects.filter(item =>
-        item.name.toLowerCase().slice(0, inputLength) === inputValue
+        item.name.toLowerCase().slice(0, inputLength) === inputValue //Tim theo ten
+        ||
+        item.phone.toLowerCase().slice(0, inputLength) === inputValue //Tim theo sdt
+        ||
+        item.markerId.toLowerCase().slice(0, inputLength) === inputValue //Tim theo markerId
+        ||
+        item.address.toLowerCase().slice(0, inputLength) === inputValue //Tim theo dia chi
     );
 };
 
