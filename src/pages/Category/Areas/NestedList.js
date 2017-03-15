@@ -24,15 +24,20 @@ function GenNested(props) {
                 } else {
                     nest.push(
                         <li key={area.id} className="dd-item" data-id={area.id}>
+                            <button type="button" data-action="collapse" data-id={area.id} onClick={props.onBtnCollapseClicked}
+                                style={area.expand == null || area.expand === false ? { display: 'none' } : { display: 'block' }}>Collapse</button>
+                            <button type="button" data-action="expand" data-id={area.id} onClick={props.onBtnExpandClicked}
+                                style={area.expand == null || area.expand === false ? { display: 'block' } : { display: 'none' }}>Expand</button>
                             <div className="dd-handle">
                                 {area.id} - {area.name}
                                 <i className="fa fa-times pull-right font-red" data-id={area.id} title="Xóa" aria-hidden="true" onClick={props.onBtnDeleteClicked}></i>
                                 <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
                                 <i className="fa fa-plus pull-right font-blue" data-id={area.id} title="Thêm mới" aria-hidden="true" onClick={props.onBtnAddClicked}></i>
                             </div>
-                            <ol className="dd-list">
+                            <ol className="dd-list" data-parentid={area.id}
+                                style={area.expand == null || area.expand === false ? { display: 'none' } : { display: 'block' }}>
                                 {/*De quy*/}
-                                <GenNested areas={area.childs} onBtnAddClicked={props.onBtnAddClicked} onBtnDeleteClicked={props.onBtnDeleteClicked} onBtnEditClicked={props.onBtnEditClicked} />
+                                <GenNested areas={area.childs} onBtnAddClicked={props.onBtnAddClicked} onBtnDeleteClicked={props.onBtnDeleteClicked} onBtnEditClicked={props.onBtnEditClicked} onBtnExpandClicked={props.onBtnExpandClicked} onBtnCollapseClicked={props.onBtnCollapseClicked} />
                             </ol>
                         </li>
                     );
@@ -45,6 +50,19 @@ function GenNested(props) {
     }
 }
 
+function findParentLevelForUpdate(areas, id, lastNode, expand) {
+    _.forEach(areas, function (area) {
+        if (_.isEqual(area.id, id)) {
+            area.expand = expand;
+
+        } else {
+            if (_.size(area.childs) > 0) {
+                findParentLevelForUpdate(area.childs, id, area, expand);
+            }
+        }
+    });
+}
+
 class NestedList extends Component {
 
     constructor(props) {
@@ -53,6 +71,8 @@ class NestedList extends Component {
         this.onBtnAddClicked = this.onBtnAddClicked.bind(this);
         this.onBtnDeleteClicked = this.onBtnDeleteClicked.bind(this);
         this.onBtnEditClicked = this.onBtnEditClicked.bind(this);
+        this.onBtnExpandClicked = this.onBtnExpandClicked.bind(this);
+        this.onBtnCollapseClicked = this.onBtnCollapseClicked.bind(this);
     }
 
     onBtnAddClicked(e) {
@@ -65,7 +85,7 @@ class NestedList extends Component {
         var name = e.target.getAttribute('data-name');
         var latitude = e.target.getAttribute('data-latitude');
         var longitude = e.target.getAttribute('data-longitude');
-        
+
         this.props.onBtnChildEditClicked(id, name, latitude, longitude);
     }
 
@@ -114,12 +134,25 @@ class NestedList extends Component {
         this.loadData();
     }
 
+    //When btn expand on nested list clicked
+    onBtnExpandClicked(e) {
+        var id = e.target.getAttribute('data-id');
+        findParentLevelForUpdate(this.state.areas, id, {}, true);
+        this.setState({ areas: this.state.areas });
+    }
+
+    onBtnCollapseClicked(e) {
+        var id = e.target.getAttribute('data-id');
+        findParentLevelForUpdate(this.state.areas, id, {}, false);
+        this.setState({ areas: this.state.areas });
+    }
+
     render() {
 
         return (
             <div className="dd" id="nestable_list_1">
                 <ol className="dd-list">
-                    <GenNested areas={this.state.areas} onBtnAddClicked={this.onBtnAddClicked} onBtnDeleteClicked={this.onBtnDeleteClicked} onBtnEditClicked={this.onBtnEditClicked} />
+                    <GenNested areas={this.state.areas} onBtnAddClicked={this.onBtnAddClicked} onBtnDeleteClicked={this.onBtnDeleteClicked} onBtnEditClicked={this.onBtnEditClicked} onBtnExpandClicked={this.onBtnExpandClicked} onBtnCollapseClicked={this.onBtnCollapseClicked} />
                 </ol>
             </div>
         );

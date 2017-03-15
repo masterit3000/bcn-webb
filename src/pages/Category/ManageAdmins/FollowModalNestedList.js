@@ -23,16 +23,21 @@ function GenNested(props) {
                         </li>);
                 } else {
                     nest.push(
-                        <li key={area.id} onClick={props.itemClicked} className="dd-item" data-id={area.id} data-status={_.indexOf(props.follows, area.id) >= 0 ? "1" : "0"}>
-                            <div className="dd-handle" data-id={area.id} data-status={_.indexOf(props.follows, area.id) >= 0 ? "1" : "0"}>
+                        <li key={area.id} className="dd-item" data-id={area.id} data-status={_.indexOf(props.follows, area.id) >= 0 ? "1" : "0"}>
+                            <button type="button" data-action="collapse" data-id={area.id} onClick={props.onBtnCollapseClicked}
+                                style={area.expand == null || area.expand === false ? { display: 'none' } : { display: 'block' }}>Collapse</button>
+                            <button type="button" data-action="expand" data-id={area.id} onClick={props.onBtnExpandClicked}
+                                style={area.expand == null || area.expand === false ? { display: 'block' } : { display: 'none' }}>Expand</button>
+                            <div className="dd-handle" onClick={props.itemClicked} data-id={area.id} data-status={_.indexOf(props.follows, area.id) >= 0 ? "1" : "0"}>
                                 {area.id} - {area.name}
                                 {_.indexOf(props.follows, area.id) >= 0
                                     ? <i className="fa fa-check pull-right font-green" data-id={area.id} title="Chọn" aria-hidden="true" ></i> : ""
                                 }
                             </div>
-                            <ol className="dd-list">
+                            <ol className="dd-list" style={area.expand == null || area.expand === false ? { display: 'none' } : { display: 'block' }}>
                                 {/*De quy*/}
-                                <GenNested follows={props.follows} areas={area.childs} onBtnAddClicked={props.onBtnAddClicked} onBtnDeleteClicked={props.onBtnDeleteClicked} onBtnEditClicked={props.onBtnEditClicked} />
+                                <GenNested follows={props.follows} itemClicked={props.itemClicked} areas={area.childs} onBtnAddClicked={props.onBtnAddClicked} onBtnDeleteClicked={props.onBtnDeleteClicked} onBtnEditClicked={props.onBtnEditClicked}
+                                    onBtnExpandClicked={props.onBtnExpandClicked} onBtnCollapseClicked={props.onBtnCollapseClicked} />
                             </ol>
                         </li>
                     );
@@ -44,18 +49,34 @@ function GenNested(props) {
         return <div>Không có dữ liệu</div>;
     }
 }
+
+
+function findParentLevelForUpdate(areas, id, lastNode, expand) {
+    _.forEach(areas, function (area) {
+        if (_.isEqual(area.id, id)) {
+            area.expand = expand;
+        } else {
+            if (_.size(area.childs) > 0) {
+                findParentLevelForUpdate(area.childs, id, area, expand);
+            }
+        }
+    });
+}
+
 class FollowModalNestedList extends Component {
     constructor(props) {
         super(props);
         this.state = { areas: [] };
         this.itemClicked = this.itemClicked.bind(this);
+        this.onBtnExpandClicked = this.onBtnExpandClicked.bind(this);
+        this.onBtnCollapseClicked = this.onBtnCollapseClicked.bind(this);
     }
 
     itemClicked(e) {
+        console.log('item clicked');
         var id = e.target.getAttribute('data-id');
         var status = e.target.getAttribute('data-status');
         var username = this.props.followId;
-        console.log(e.target);
 
         var self = this;
         var token = localStorage.getItem('token');
@@ -109,8 +130,23 @@ class FollowModalNestedList extends Component {
             instance.get(url).then(function (response) {
                 self.setState({ follows: response.data.data });
             });
-            self.setState({ areas: response.data.data });
+            if (_.size(self.state.areas) === 0) {
+                self.setState({ areas: response.data.data });
+            }
         });
+    }
+
+    //When btn expand on nested list clicked
+    onBtnExpandClicked(e) {
+        var id = e.target.getAttribute('data-id');
+        findParentLevelForUpdate(this.state.areas, id, {}, true);
+        this.setState({ areas: this.state.areas });
+    }
+
+    onBtnCollapseClicked(e) {
+        var id = e.target.getAttribute('data-id');
+        findParentLevelForUpdate(this.state.areas, id, {}, false);
+        this.setState({ areas: this.state.areas });
     }
 
     componentWillMount() {
@@ -121,7 +157,7 @@ class FollowModalNestedList extends Component {
         return (
             <div className="dd" id="nestable_list_1">
                 <ol className="dd-list">
-                    <GenNested itemClicked={this.itemClicked} areas={this.state.areas} follows={this.state.follows} />
+                    <GenNested itemClicked={this.itemClicked} areas={this.state.areas} follows={this.state.follows} onBtnExpandClicked={this.onBtnExpandClicked} onBtnCollapseClicked={this.onBtnCollapseClicked} />
                 </ol>
             </div>
         );
