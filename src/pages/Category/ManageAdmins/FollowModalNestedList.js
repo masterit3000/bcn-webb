@@ -53,7 +53,7 @@ function GenNested(props) {
 
 function findParentLevelForUpdate(areas, id, lastNode, expand) {
     _.forEach(areas, function (area) {
-        if (_.isEqual(area.id, id)) {
+        if (_.toInteger(area.id) === _.toInteger(id)) {
             area.expand = expand;
         } else {
             if (_.size(area.childs) > 0) {
@@ -73,7 +73,6 @@ class FollowModalNestedList extends Component {
     }
 
     itemClicked(e) {
-        console.log('item clicked');
         var id = e.target.getAttribute('data-id');
         var status = e.target.getAttribute('data-status');
         var username = this.props.followId;
