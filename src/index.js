@@ -17,6 +17,7 @@ import Downloads from './pages/Downloads/Downloads';
 import SysLog from './pages/SysLog/SysLog';
 import Account from './pages/Account/Account';
 import ChangePassword from './pages/Account/ChangePassword';
+import Buildings from './pages/Category/Buildings/Buildings';
 
 ReactDOM.render(
   <IntlProvider locale="vi" messages={generatedMessages.translationMessages.vi}>
@@ -33,6 +34,8 @@ ReactDOM.render(
         <Route path="/Account" component={Account} >
           <Route path="ChangePassword" component={ChangePassword} />
         </Route>
+        <Route path="/Buildings" component={Buildings} />
+        
       </Route>
       <Route path="/Login" component={Login}>
 

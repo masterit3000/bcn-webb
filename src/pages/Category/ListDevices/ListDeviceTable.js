@@ -115,7 +115,7 @@ class ListDeviceTable extends React.Component {
                     Số điện thoại
                     </TableHeaderColumn>
                 <TableHeaderColumn dataField='imei' editable={{ type: 'text' }}>
-                    Imei
+                    Mã thiết bị
                     </TableHeaderColumn>
                 <TableHeaderColumn dataField='desc' editable={{ type: 'text' }}>
                     Mô tả

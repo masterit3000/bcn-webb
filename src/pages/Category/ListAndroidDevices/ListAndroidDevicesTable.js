@@ -159,12 +159,12 @@ class ListAndroidDevicesTable extends Component {
                 striped
                 hover>
                 <TableHeaderColumn dataField={'imei'} isKey>
-                    Imei
+                    Mã thiết bị
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='manufacture'>
+                <TableHeaderColumn hidden dataField='manufacture'>
                     Hãng sản xuất
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='deviceName'>
+                <TableHeaderColumn hidden dataField='deviceName'>
                     Tên máy
                     </TableHeaderColumn>
                 <TableHeaderColumn dataField='status' dataFormat={this.statusFormat}>

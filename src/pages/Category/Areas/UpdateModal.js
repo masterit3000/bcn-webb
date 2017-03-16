@@ -59,7 +59,9 @@ class UpdateModal extends Component {
 
         this.state = {
             txtName: '',
+            txtShortName: '',
             txtNameValid: true,
+            txtShortNameValid: true,
             bounds: null,
             markerPlace: [],
             center: { lat: 21.028952, lng: 105.852394 },
@@ -123,6 +125,7 @@ class UpdateModal extends Component {
         var params = new URLSearchParams();
         params.append('id', this.props.updateId);
         params.append('name', this.props.stores.updateName);
+        params.append('shortName', this.props.stores.updateShortName);
         params.append('lat', this.props.stores.updateLatitude);
         params.append('long', this.props.stores.updateLongitude);
 
@@ -148,8 +151,9 @@ class UpdateModal extends Component {
             this.props.stores.doUpdateLat(e.target.value);
         } else if (_.isEqual(e.target.name, 'txtLongtitude')) {
             this.props.stores.doUpdateLong(e.target.value);
+        } else if (_.isEqual(e.target.name, 'txtShortName')) {
+            this.props.stores.doUpdateShortName(e.target.value);
         }
-
     }
 
     render() {
@@ -164,11 +168,11 @@ class UpdateModal extends Component {
         const inputNotValidClass = inputValidClass + " has-error";
         const latlongValidClass = "form-group form-md-line-input";
         const latlongNotValidClass = latlongValidClass + " has-error";
-        const { stores, updateId, updateName, updateLongitude, updateLatitude, ...rest } = this.props;
+        const { stores, updateId, updateName, updateShortName, updateLongitude, updateLatitude, ...rest } = this.props;
 
         var lastLatitude = Number(mobx.toJS(stores.updateLatitude));
         var lastLongitude = Number(mobx.toJS(stores.updateLongitude));
-     
+
         var lastMarkerPlace = {
             position: { lat: lastLatitude, lng: lastLongitude },
             key: Date.now,
@@ -221,6 +225,15 @@ class UpdateModal extends Component {
                                     <input onChange={this.handleChanged} defaultValue={updateName} type="text" className="form-control" id="idTxtName" name="txtName" />
                                     <label htmlFor="idTxtName">Tên Khu vực</label> <span className="input-group-addon">
                                         <i className={this.state.txtNameValid ? "fa fa-check font-blue" : "fa fa-ban font-red"}></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className={this.state.txtShortNameValid ? inputValidClass : inputNotValidClass}>
+                                <div className="input-group right-addon">
+                                    <input onChange={this.handleChanged} defaultValue={updateShortName} type="text" className="form-control" id="idTxtShortName" name="txtShortName" />
+                                    <label htmlFor="idTxtShortName">Tên viết tắt</label> <span className="input-group-addon">
+                                        <i className={this.state.txtShortNameValid ? "fa fa-check font-blue" : "fa fa-ban font-red"}></i>
                                     </span>
                                 </div>
                             </div>

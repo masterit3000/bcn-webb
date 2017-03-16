@@ -90,14 +90,14 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
         center={props.center}
         onBoundsChanged={props.onBoundsChanged}
     >
-        <SearchBox
+        {/*<SearchBox
             ref={props.onSearchBoxMounted}
             bounds={props.bounds}
             controlPosition={google.maps.ControlPosition.TOP_LEFT}
             onPlacesChanged={props.onPlacesChanged}
             inputPlaceholder="Tìm kiếm địa điểm"
             inputStyle={INPUT_STYLE}
-        />
+        />*/}
         {props.markerPlace.map((marker, index) => (
             <Marker
                 key={index}

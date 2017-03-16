@@ -35,11 +35,26 @@ class Menu extends Component {
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <Link to="/Area">
-                                    Quản lý khu vực
-                                </Link>
+                            <li className="menu-dropdown classic-menu-dropdown">
+                                <a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="#">
+                                    Quản lý danh mục <i className="fa fa-angle-down"></i>
+                                </a>
+                                <ul className="dropdown-menu pull-left">
+                                    <li className="dropdown">
+                                        <Link to="/Area">
+                                            <i className="fa fa-area-chart"></i>&nbsp;
+                                                Quản lý khu vực
+                                            </Link>
+                                    </li>
+                                    <li className="dropdown">
+                                        <Link to="/Buildings">
+                                            <i className="fa fa-building-o"></i>&nbsp;
+                                            Dạng kiến trúc công trình
+                                        </Link>
+                                    </li>
+                                </ul>
                             </li>
+
                             <li>
                                 <Link to="/Admins">
                                     Danh sách người dùng

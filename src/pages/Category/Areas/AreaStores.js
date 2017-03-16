@@ -8,7 +8,8 @@ class AreaStores {
             updateId: '',
             updateName: '',
             updateLatitude: '',
-            updateLongitude: ''
+            updateLongitude: '',
+            updateShortName: ''
         });
     }
 
@@ -19,18 +20,21 @@ class AreaStores {
         this.updateLongitude = updateLongitude;
     }
 
-    doUpdateName(updateName){
-         this.updateName = updateName;
+    doUpdateName(updateName) {
+        this.updateName = updateName;
     }
 
-    doUpdateLat(updateLat){
+    doUpdateLat(updateLat) {
         this.updateLatitude = updateLat;
     }
 
-    doUpdateLong(updateLong){
+    doUpdateLong(updateLong) {
         this.updateLongitude = updateLong;
     }
 
+    doUpdateShortName(shortName) {
+        this.updateShortName = shortName;
+    }
 }
 
 export default AreaStores;

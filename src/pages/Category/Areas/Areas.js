@@ -33,13 +33,14 @@ class Areas extends Component {
         this.setState({ showInsertModal: true, isNewParent: false, insertParentId: id });
     }
 
-    onBtnChildEditClicked(id, updateName, latitude, longitude) {
+    onBtnChildEditClicked(id, updateName, updateShortName, latitude, longitude) {
         areaStores.update(id, updateName, latitude, longitude);
 
         this.setState({
             showEditModal: true,
             updateId: id,
             updateName: updateName,
+            updateShortName: updateShortName,
             updateLatitude: latitude,
             updateLongitude: longitude
         });
@@ -60,7 +61,7 @@ class Areas extends Component {
 
             //BEGIN PAGE CONTAINER 
             <div className="page-container">
-                <UpdateModal title="Sửa khu vực" show={this.state.showEditModal} stores={areaStores} updateId={this.state.updateId} updateName={this.state.updateName} updateLatitude={this.state.updateLatitude} updateLongitude={this.state.updateLongitude} onHide={this.closeUpdateModal} />
+                <UpdateModal title="Sửa khu vực" show={this.state.showEditModal} updateShortName={this.state.updateShortName} stores={areaStores} updateId={this.state.updateId} updateName={this.state.updateName} updateLatitude={this.state.updateLatitude} updateLongitude={this.state.updateLongitude} onHide={this.closeUpdateModal} />
                 <InsertModal title="Thêm mới khu vực" show={this.state.showInsertModal} isNewParent={this.state.isNewParent} onHide={this.closeInsertModal} parentId={this.state.insertParentId} />
                 <PageHead title="Quản lý" subTitle="Danh sách khu vực" />
                 <div className="page-content">

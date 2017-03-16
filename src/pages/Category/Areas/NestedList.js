@@ -15,9 +15,9 @@ function GenNested(props) {
                     nest.push(
                         <li key={area.id} className="dd-item" data-id={area.id}>
                             <div className="dd-handle">
-                                {area.id} - {area.name}
+                                {area.id} - {area.name} ({area.shortName})
                                 <i className="fa fa-times pull-right font-red" data-id={area.id} title="Xóa" aria-hidden="true" onClick={props.onBtnDeleteClicked}></i>
-                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
+                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-shortName={area.shortName} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
                                 <i className="fa fa-plus pull-right font-blue" data-id={area.id} title="Thêm mới" aria-hidden="true" onClick={props.onBtnAddClicked}></i>
                             </div>
                         </li>);
@@ -29,9 +29,9 @@ function GenNested(props) {
                             <button type="button" data-action="expand" data-id={area.id} onClick={props.onBtnExpandClicked}
                                 style={area.expand == null || area.expand === false ? { display: 'block' } : { display: 'none' }}>Expand</button>
                             <div className="dd-handle">
-                                {area.id} - {area.name}
+                                {area.id} - {area.name} ({area.shortName})
                                 <i className="fa fa-times pull-right font-red" data-id={area.id} title="Xóa" aria-hidden="true" onClick={props.onBtnDeleteClicked}></i>
-                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
+                                <i className="fa fa-pencil pull-right font-grey-gallery" data-id={area.id} data-name={area.name} data-latitude={area.latitude} data-shortName={area.shortName} data-longitude={area.longitude} title="Sửa" aria-hidden="true" onClick={props.onBtnEditClicked}></i>
                                 <i className="fa fa-plus pull-right font-blue" data-id={area.id} title="Thêm mới" aria-hidden="true" onClick={props.onBtnAddClicked}></i>
                             </div>
                             <ol className="dd-list" data-parentid={area.id}
@@ -52,9 +52,8 @@ function GenNested(props) {
 
 function findParentLevelForUpdate(areas, id, lastNode, expand) {
     _.forEach(areas, function (area) {
-        if (_.isEqual(area.id, id)) {
+        if (_.toInteger(area.id) === _.toInteger(id)) {
             area.expand = expand;
-
         } else {
             if (_.size(area.childs) > 0) {
                 findParentLevelForUpdate(area.childs, id, area, expand);
@@ -83,10 +82,11 @@ class NestedList extends Component {
     onBtnEditClicked(e) {
         var id = e.target.getAttribute('data-id');
         var name = e.target.getAttribute('data-name');
+        var shortName = e.target.getAttribute('data-shortName');
         var latitude = e.target.getAttribute('data-latitude');
         var longitude = e.target.getAttribute('data-longitude');
-
-        this.props.onBtnChildEditClicked(id, name, latitude, longitude);
+        
+        this.props.onBtnChildEditClicked(id, name, shortName, latitude, longitude);
     }
 
     onBtnDeleteClicked(e) {
@@ -136,6 +136,7 @@ class NestedList extends Component {
 
     //When btn expand on nested list clicked
     onBtnExpandClicked(e) {
+
         var id = e.target.getAttribute('data-id');
         findParentLevelForUpdate(this.state.areas, id, {}, true);
         this.setState({ areas: this.state.areas });
