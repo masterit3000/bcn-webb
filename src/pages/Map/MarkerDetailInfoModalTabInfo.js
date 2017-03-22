@@ -4,6 +4,8 @@ class MarkerDetailInfoModalTabInfo extends Component {
     render() {
         return (
             <div>
+                <img src="public/vncuba.jpg" width="250px" height="auto" style={{display:'block', margin:'0 auto'}}/>
+                <br />
                 <ul className="list-group">
                     <li className="list-group-item">
                         <div className="row">

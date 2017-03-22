@@ -665,7 +665,7 @@ class IndexMap extends Component {
                                 </ul>
                                 <div className="tab-content">
                                     <div className="tab-pane active" id="tab1">
-                                        <img src="public/vncuba.jpg" width="150px" height="auto" />
+                                        <img src="public/vncuba.jpg" width="250px" height="auto" style={{display:'block', margin:'0 auto'}}/>
 
                                         <br />
                                         <br />
@@ -791,6 +791,11 @@ class IndexMap extends Component {
                                             <tr>
                                                 <td>3</td>
                                                 <td>Nhà Hát Lớn HN</td>
+                                                <td>1550m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>Hiệu thuốc Minh Chính</td>
                                                 <td>1550m</td>
                                             </tr>
                                             </tbody>
