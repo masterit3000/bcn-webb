@@ -17,6 +17,7 @@ import DeviceLogModal from './DeviceLogModal';
 import MarkerDetailInfoModal from './MarkerDetailInfoModal';
 import Autosuggest from 'react-autosuggest';
 import MapStores from './MapStores';
+import {Table} from 'react-bootstrap';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -313,10 +314,17 @@ class IndexMap extends Component {
             _.forEach(arrListDevices, function (value) {
                 if (_.isEqual(value.MarkerId, arrListDevices.MarkerId)) {
                     if (data.isFire) {
+                        console.log(data);
                         self.setState({
                             showModal: true,
                             txtTxtFireNote: '',
-                            modalContent: 'Cảnh báo cháy tại: ' + data.doc.name + ' - ' + data.doc.address + ' - ' + data.doc.phone,
+                            modalContent: 'Cảnh báo cháy',
+                            modalContentName: data.doc.name,
+                            modalContentAddress: data.doc.address,
+                            modalContentPhone: data.doc.phone,
+                            modalContentDesc: data.doc.desc,
+                            modalContentImei: data.doc.imei,
+                            modalContentId: data.markerId,
                             fireHistoryId: data.fireHistoryId
                         });
                         self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
@@ -638,7 +646,6 @@ class IndexMap extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <Sound url="assets/ding.wav" playStatus="PLAYING" />
-                        <p>{this.state.modalContent}</p>
                         <div>
                             <div className="tabbable-line">
                                 <ul className="nav nav-tabs ">
@@ -648,36 +655,148 @@ class IndexMap extends Component {
                                     </li>
                                     <li>
                                         <a href="#tab2" data-toggle="tab">
-                                            Nhật ký </a>
+                                            Trụ nước </a>
                                     </li>
-                                    <li>
-                                        <a href="#tab2" data-toggle="tab">
-                                            Dạng kiến trúc công trình </a>
-                                    </li>
-                                    <li>
+                                   
+                                        <li>
                                         <a href="#tab3" data-toggle="tab">
-                                            Đặc điểm giao thông xung quanh </a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab4" data-toggle="tab">
-                                            Thông tin từ tủ </a>
+                                           Dạng kiến trúc công trình </a>
                                     </li>
                                 </ul>
                                 <div className="tab-content">
                                     <div className="tab-pane active" id="tab1">
-                                        <img src="public/vncuba.jpg" width="100px" height="auto" />
-                                        <label htmlFor="txtTxtFireNote">Ghi chú</label>
+                                        <img src="public/vncuba.jpg" width="150px" height="auto" />
+
+                                        <br />
+                                        <br />
+                                        <ul className="list-group">
+                                            <li className="list-group-item">
+                                                <div className="row">
+                                                    <div className="col-md-2">
+                                                        ID:
+                                                    </div>
+                                                    <div className="col-md-10">
+                                                        <b>{this.state.modalContentId}</b>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+                                            <li className="list-group-item">
+                                                <div className="row">
+                                                    <div className="col-md-2">
+                                                        Tên:
+                                                    </div>
+                                                    <div className="col-md-10">
+                                                        <b>{this.state.modalContentName}</b>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li className="list-group-item">
+                                                <div className="row">
+                                                    <div className="col-md-2">
+                                                        Địa chỉ:
+                                                    </div>
+                                                    <div className="col-md-10">
+                                                        <b>{this.state.modalContentAddress}</b>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+                                            <li className="list-group-item">
+                                                <div className="row">
+                                                    <div className="col-md-2">
+                                                        Điện thoại:
+                                                    </div>
+                                                    <div className="col-md-10">
+                                                        <b>{this.state.modalContentPhone}</b>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            
+                                            <li className="list-group-item">
+                                                <div className="row">
+                                                    <div className="col-md-2">
+                                                        Mô tả:
+                                                    </div>
+                                                    <div className="col-md-10">
+                                                        <b>{this.state.modalContentDesc}</b>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <br /> <br />
+                                        <label htmlFor="txtTxtFireNote">Nhập ghi chú vụ cháy</label>
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
                                     </div>
                                     <div className="tab-pane" id="tab2">
-                                        
+                                         <Table striped bordered condensed hover>
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>
+                                                    Tên trụ nước
+                                                </th>
+                                                <th>Vị trí</th>
+                                                <th>Khoảng cách</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Trụ 002</td>
+                                                <td>Số 3 Trần Phú</td>
+                                                <td>30m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Trụ 103</td>
+                                                <td>Trong bệnh Viện</td>
+                                                <td>100m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Trụ 70</td>
+                                                <td>30 Trần Phú</td>
+                                                <td>150m</td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
                                     </div>
                                     <div className="tab-pane" id="tab3">
+                                     <Table striped bordered condensed hover>
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>
+                                                    Tên
+                                                </th>
+                                                
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Nhà tù hỏa lò</td>
+                                                 <td>350m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Ngân hàng VCB</td>
+                                                <td>1450m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Nhà Hát Lớn HN</td>
+                                                <td>1550m</td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
+                                    </div>
                                     
-                                    </div>
-                                    <div className="tab-pane" id="tab4">
-
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -49,7 +49,7 @@ class MarkerDetailInfoModal extends Component {
                         <ul className="nav nav-tabs ">
                             <li className="active">
                                 <a href="#tab1" data-toggle="tab">
-                                    Thông tin chi tiết </a>
+                                    Thông tin chung </a>
                             </li>
                             <li>
                                 <a href="#tab2" data-toggle="tab">
@@ -65,7 +65,7 @@ class MarkerDetailInfoModal extends Component {
                             </li>
                             <li>
                                 <a href="#tab4" data-toggle="tab">
-                                    Thông tin từ tủ </a>
+                                    Thông tin cơ sở </a>
                             </li>
                         </ul>
                         <div className="tab-content">
@@ -79,7 +79,7 @@ class MarkerDetailInfoModal extends Component {
                                 <MarkerDetailInfoModalTabNearByLocations lat={data.lat} long={data.long} radius="500" />
                             </div>
                             <div className="tab-pane" id="tab4">
-
+                                Thông tin cơ sở
                             </div>
                         </div>
                     </div>
