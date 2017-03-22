@@ -5,7 +5,7 @@ import MarkerDetailInfoModalTabNearByLocations from './MarkerDetailInfoModalTabN
 import DeviceLogModalTable from './DeviceLogModalTable';
 import axios from 'axios';
 import { Config } from '../../Config';
-
+import {Table} from 'react-bootstrap';
 class MarkerDetailInfoModal extends Component {
 
     constructor(props) {
@@ -56,13 +56,10 @@ class MarkerDetailInfoModal extends Component {
                                     Nhật ký </a>
                             </li>
                             <li>
-                                <a href="#tab2" data-toggle="tab">
-                                    Dạng kiến trúc công trình </a>
-                            </li>
-                            <li>
                                 <a href="#tab3" data-toggle="tab">
-                                    Đặc điểm giao thông xung quanh </a>
+                                   Nguồn nước </a>
                             </li>
+                         
                             <li>
                                 <a href="#tab4" data-toggle="tab">
                                     Thông tin cơ sở </a>
@@ -76,10 +73,51 @@ class MarkerDetailInfoModal extends Component {
                                 <DeviceLogModalTable logs={this.state.deviceLogs} />
                             </div>
                             <div className="tab-pane" id="tab3">
-                                <MarkerDetailInfoModalTabNearByLocations lat={data.lat} long={data.long} radius="500" />
+                                <Table striped bordered condensed hover>
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>
+                                                    Tên trụ nước
+                                                </th>
+                                                <th>Vị trí</th>
+                                                <th>Khoảng cách</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Trụ 002</td>
+                                                <td>Số 3 Trần Phú</td>
+                                                <td>30m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Trụ 103</td>
+                                                <td>Trong bệnh Viện</td>
+                                                <td>100m</td>
+                                               
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Trụ 70</td>
+                                                <td>30 Trần Phú</td>
+                                                <td>150m</td>
+                                            </tr>
+                                            </tbody>
+                                        </Table>
+                                {/*<MarkerDetailInfoModalTabNearByLocations lat={data.lat} long={data.long} radius="500" />*/}
                             </div>
                             <div className="tab-pane" id="tab4">
-                                Thông tin cơ sở
+                               <p>
+                                            - Công trình cao 10 tầng<br />
+                                            - Khối tích: 6000m3<br />
+                                            - Số lượng người thường trực: 50 người<br />
+                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="200px" height="auto" /><br /><br />
+                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="200px" height="auto" />
+
+                                </p>
                             </div>
                         </div>
                     </div>

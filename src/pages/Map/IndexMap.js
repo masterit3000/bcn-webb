@@ -660,7 +660,7 @@ class IndexMap extends Component {
                                    
                                         <li>
                                         <a href="#tab3" data-toggle="tab">
-                                           Dạng kiến trúc công trình </a>
+                                           Thông tin cơ sở </a>
                                     </li>
                                 </ul>
                                 <div className="tab-content">
@@ -765,41 +765,14 @@ class IndexMap extends Component {
                                         </Table>
                                     </div>
                                     <div className="tab-pane" id="tab3">
-                                     <Table striped bordered condensed hover>
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>
-                                                    Tên
-                                                </th>
-                                                
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Nhà tù hỏa lò</td>
-                                                 <td>350m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Ngân hàng VCB</td>
-                                                <td>1450m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Nhà Hát Lớn HN</td>
-                                                <td>1550m</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>Hiệu thuốc Minh Chính</td>
-                                                <td>1550m</td>
-                                            </tr>
-                                            </tbody>
-                                        </Table>
+                                        <p>
+                                            - Đây là công trình cao 10 tầng<br />
+                                            - Khối tích: 6000m3<br />
+                                            - Số lượng người thường trực: 50 người<br />
+                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="200px" height="auto" /><br /><br />
+                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="200px" height="auto" />
+
+                                        </p>
                                     </div>
                                     
                                 </div>
