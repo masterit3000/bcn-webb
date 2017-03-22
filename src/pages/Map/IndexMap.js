@@ -665,7 +665,7 @@ class IndexMap extends Component {
                                 </ul>
                                 <div className="tab-content">
                                     <div className="tab-pane active" id="tab1">
-                                        <img src="public/vncuba.jpg" width="250px" height="auto" style={{display:'block', margin:'0 auto'}}/>
+                                        <img src="public/vncuba.jpg" width="300px" height="auto" style={{display:'block', margin:'0 auto'}}/>
 
                                         <br />
                                         <br />
@@ -769,8 +769,8 @@ class IndexMap extends Component {
                                             - Đây là công trình cao 10 tầng<br />
                                             - Khối tích: 6000m3<br />
                                             - Số lượng người thường trực: 50 người<br />
-                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="200px" height="auto" /><br /><br />
-                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="200px" height="auto" />
+                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="300px" height="auto" /><br /><br />
+                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="300px" height="auto" />
 
                                         </p>
                                     </div>
