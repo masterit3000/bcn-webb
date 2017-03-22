@@ -13,7 +13,7 @@ function nameEditValidator(value) {
 
 function addressValidator(value) {
     if (!value) {
-        return 'Bạn chưa địa chỉ!'
+        return 'Bạn chưa nhập địa chỉ!'
     }
     return true;
 }
@@ -114,7 +114,7 @@ class ListDeviceTable extends React.Component {
                 <TableHeaderColumn dataField='phone' editable={{ type: 'text' }}>
                     Số điện thoại
                     </TableHeaderColumn>
-                <TableHeaderColumn dataField='imei' editable={{ type: 'text' }}>
+                <TableHeaderColumn dataField='imei' editable={false}>
                     Mã thiết bị
                     </TableHeaderColumn>
                 <TableHeaderColumn dataField='desc' editable={{ type: 'text' }}>

@@ -4,14 +4,66 @@ import { Config } from '../../../Config';
 import { withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import SearchBox from "react-google-maps/lib/places/SearchBox";
 import './InsertModalStyle.css';
+import './AutoSuggestStyle.css';
 import axios from 'axios';
 import _ from 'lodash';
 import TableSMS from './TableSMS';
 import ListDevicesStores from './ListDevicesStores';
 import { observer } from 'mobx-react';
 import mobx from 'mobx';
+import Autosuggest from 'react-autosuggest';
 
 /* global google */
+
+//Set lai theme cho auto suggest bang cach dat ten class + listDeviceInsertModal de tranh viec bi trung className
+const themeAutoSuggest = {
+    container: 'container_listDeviceInsertModal',
+    containerOpen: 'container--open_listDeviceInsertModal',
+    input: 'input_listDeviceInsertModal',
+    inputOpen: 'input--open_listDeviceInsertModal',
+    inputFocused: 'input--focused_listDeviceInsertModal',
+    suggestionsContainer: 'suggestions-container_listDeviceInsertModal',
+    suggestionsContainerOpen: 'suggestions-container--open_listDeviceInsertModal',
+    suggestionsList: 'suggestions-list_listDeviceInsertModal',
+    suggestion: 'suggestion_listDeviceInsertModal',
+    suggestionFirst: 'suggestion--first_listDeviceInsertModal',
+    suggestionHighlighted: 'suggestion--highlighted_listDeviceInsertModal',
+    sectionContainer: 'section-container_listDeviceInsertModal',
+    sectionContainerFirst: 'section-container--first_listDeviceInsertModal',
+    sectionTitle: 'section-title_listDeviceInsertModal'
+};
+
+// Imagine you have a list of languages that you'd like to autosuggest.
+var autoCorrectAreas = [
+
+
+];
+
+// Teach Autosuggest how to calculate suggestions for any given input value.
+const getSuggestions = value => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    console.log(autoCorrectAreas);
+    return inputLength === 0 ? autoCorrectAreas : autoCorrectAreas.filter(autoCorrectArea =>
+        autoCorrectArea.name.toLowerCase().slice(0, inputLength) === inputValue
+        ||
+        autoCorrectArea.shortName.toLowerCase().slice(0, inputLength) === inputValue //Tim theo sdt
+    );
+};
+
+// When suggestion is clicked, Autosuggest needs to populate the input element
+// based on the clicked suggestion. Teach Autosuggest how to calculate the
+// input value for every given suggestion.
+const getSuggestionValue = suggestion => suggestion.name;
+
+// Use your imagination to render suggestions.
+const renderSuggestion = suggestion => (
+    <div>
+        {suggestion.name}
+    </div>
+);
+
+
 //SearchBox style
 const INPUT_STYLE = {
     boxSizing: 'border-box',
@@ -72,7 +124,19 @@ class InsertModal extends Component {
             modalIsError: false,
             modalIsErrorText: '',
             imeis: [],
-            areas: []
+            areas: [],
+            value: '', //value for suggestion
+            suggestions: [],
+            txtDeviceId: false,
+            txtLatitude: false,
+            txtLongitude: false,
+            txtName: false,
+            txtDeviceIdValid: false,
+            txtLatitudeValid: false,
+            txtLongitudeValid: false,
+            txtNameValid: false,
+            selectArea: '',
+            tempDeviceId: ''
         };
         listDevicesStores = new ListDevicesStores();
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
@@ -85,7 +149,45 @@ class InsertModal extends Component {
         this.onModalBtnCloseClicked = this.onModalBtnCloseClicked.bind(this);
         this.loadUnusedImeiCombobox = this.loadUnusedImeiCombobox.bind(this);
         this.loadAreas = this.loadAreas.bind(this);
+        this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     }
+
+    //Suggestion changed
+    onChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+    };
+
+    // Autosuggest will call this function every time you need to update suggestions.
+    // You already implemented this logic above, so just use it.
+    onSuggestionsFetchRequested = ({ value }) => {
+        this.setState({
+            suggestions: getSuggestions(value)
+        });
+    };
+
+    onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
+        //Move map to location after choosed
+        this.setState({
+            center: { lat: _.toNumber(suggestion.latitude), lng: _.toNumber(suggestion.longitude) }
+        });
+        var self = this;
+        this.setState({
+            selectArea: suggestion.id,
+            selectAreaName: suggestion.name
+        }, () => {
+            self.getId();
+        });
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
 
     onModalBtnCloseClicked(event) {
         this.props.onHide();
@@ -93,45 +195,51 @@ class InsertModal extends Component {
 
     onSave(event) {
         //Danh sach gui tin sms
-        var sms = mobx.toJS(listDevicesStores.sms);
+        if (this.state.txtDeviceIdValid && this.state.txtLatitudeValid && this.state.txtLongitudeValid && this.state.txtNameValid) {
+            var sms = mobx.toJS(listDevicesStores.sms);
 
-        var self = this;
-        var postJson = {
-            markerId: this.state.txtDeviceId,
-            name: this.state.txtName,
-            address: this.state.txtAddress,
-            phone: this.state.txtPhone,
-            lat: this.state.selectedLat,
-            long: this.state.selectedLong,
-            imei: this.state.selectPhone,
-            desc: this.state.txtDesc,
-            area: this.state.selectArea,
-            areaName: this.state.selectAreaName,
-            sms: sms
-        };
+            var self = this;
+            var postJson = {
+                markerId: this.state.txtDeviceId,
+                name: this.state.txtName,
+                address: this.state.txtAddress,
+                phone: this.state.txtPhone,
+                lat: this.state.selectedLat,
+                long: this.state.selectedLong,
+                imei: this.state.selectPhone,
+                desc: this.state.txtDesc,
+                area: this.state.selectArea,
+                areaName: this.state.selectAreaName,
+                sms: sms
+            };
 
-        var instance = axios.create({
-            baseURL: Config.ServiceUrl,
-            timeout: Config.RequestTimeOut,
-            headers: { 'x-access-token': localStorage.getItem('token') }
-        });
 
-        instance.post('/Common/InsertDeviceLocation', postJson)
-            .then(function (response) {
-                if (response.data.ResponseCode === 1) {
-                    self.setState({ modalIsError: false, selectedLat: 0, selectedLong: 0 });
-                    self.loadUnusedImeiCombobox();
-                    self.props.onHide();
-                    self.props.loadDataParent();
-                    listDevicesStores.reset();
-                } else {
-                    self.setState({ modalIsError: true, modalIsErrorText: 'Lỗi không thể thêm mới dữ liệu' });
-                }
-
-            })
-            .catch(function (error) {
-                self.setState({ modalIsError: true, modalIsErrorText: error });
+            var instance = axios.create({
+                baseURL: Config.ServiceUrl,
+                timeout: Config.RequestTimeOut,
+                headers: { 'x-access-token': localStorage.getItem('token') }
             });
+
+            instance.post('/Common/InsertDeviceLocation', postJson)
+                .then(function (response) {
+                    if (response.data.ResponseCode === 1) {
+                        self.setState({ modalIsError: false, selectedLat: 0, selectedLong: 0 });
+                        self.loadUnusedImeiCombobox();
+                        self.props.onHide();
+                        self.props.loadDataParent();
+                        listDevicesStores.reset();
+                    } else {
+                        self.setState({ modalIsError: true, modalIsErrorText: 'Lỗi không thể thêm mới dữ liệu' });
+                    }
+
+                })
+                .catch(function (error) {
+                    self.setState({ modalIsError: true, modalIsErrorText: error });
+                });
+        } else {
+            alert('Bạn chưa nhập đủ hết các trường, kiểm tra lại!');
+        }
+
     }
 
     handleMapClick(event) {
@@ -149,11 +257,30 @@ class InsertModal extends Component {
     handleChanged(event) {
         var state = {};
         state[event.target.name] = event.target.value;
-        this.setState(state);
-        //selectAreaName
-        if (event.target.name === "selectArea") {
-            this.setState({ selectAreaName: event.target.text });
-        }
+        this.setState(state, () => {
+            //Validate
+            // if (this.state.txtDeviceId.length === 0) {
+            //     this.setState({ txtDeviceIdValid: false });
+            // } else {
+            //     this.setState({ txtDeviceIdValid: true });
+            // }
+            if (this.state.txtName.length === 0) {
+                this.setState({ txtNameValid: false });
+            } else {
+                this.setState({ txtNameValid: true });
+            }
+            if (this.state.txtLatitude.length === 0 || _.isEqual(this.state.txtLatitude, '0')) {
+                this.setState({ txtLatitudeValid: false });
+            } else {
+                this.setState({ txtLatitudeValid: true });
+            }
+            if (this.state.txtLongitude.length === 0 || _.isEqual(this.state.txtLongitude, '0')) {
+                this.setState({ txtLongitudeValid: false });
+            } else {
+                this.setState({ txtLongitudeValid: true });
+            }
+        });
+
     }
 
     handleMapMounted(map) {
@@ -178,7 +305,28 @@ class InsertModal extends Component {
     componentWillMount() {
         this.loadUnusedImeiCombobox();
         this.loadAreas();
+        this.getId();//get temporary ID 
+    }
 
+
+    getId() {
+        var self = this;
+        var token = localStorage.getItem('token');
+        var json = {}
+        json.prefix = this.state.selectArea;
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.post('/DeviceRoute/GetDeviceId', json).then(function (response) {
+            console.log(response.data);
+            self.setState({ tempDeviceId: response.data.id });
+        });
     }
 
     loadUnusedImeiCombobox() {
@@ -225,6 +373,7 @@ class InsertModal extends Component {
 
             if (_.size(areas) > 0) {
                 self.setState({ areas: areas });
+                autoCorrectAreas = areas;
                 self.setState({ selectArea: areas[0].id });
             } else {
                 self.setState({ selectArea: '', selectAreaName: '' });
@@ -233,6 +382,14 @@ class InsertModal extends Component {
     }
 
     render() {
+        const { value, suggestions } = this.state;
+        // Autosuggest will pass through all these props to the input element.
+        const inputProps = {
+            placeholder: 'Nhập tên khu vực',
+            value,
+            onChange: this.onChange
+        };
+
         const style = {
             position: 'relative',
             margin: 0,
@@ -245,13 +402,12 @@ class InsertModal extends Component {
             return <option key={i} value={opt.imei}>{opt.manufacture}-{opt.deviceName}-{opt.imei}</option>;
         }, this);
 
-        var optionsAreas = this.state.areas.map(function (opt, i) {
-            return <option key={i} value={opt.id}>{opt.name}</option>;
-        }, this);
-
+        const inputValidClass = "form-group form-md-line-input form-md-floating-label";
+        const inputNotValidClass = inputValidClass + " has-error";
+        const idValidClass = "fa fa-check";
+        const idNotValidClass = "fa fa-times";
         const { loadDataParent, ...rest } = this.props;
         return (
-
 
             <Modal {...rest} bsSize="large" aria-labelledby="contained-modal-title-lg">
                 <Modal.Header closeButton>
@@ -295,9 +451,8 @@ class InsertModal extends Component {
                                 <label htmlFor="idLatitude">Kinh độ ( Latitude )</label>
                             </div>
                             <div className="form-group form-md-line-input">
-                                <input type="text" disabled className="form-control" value={this.state.selectedLong} id="idLongtitude" name="txtLongtitude" />
-                                <label htmlFor="idLongtitude">Vĩ độ ( Longtitude )</label>
-
+                                <input type="text" disabled className="form-control" value={this.state.selectedLong} id="idLongitude" name="txtLongitude" />
+                                <label htmlFor="idLongitude">Vĩ độ ( Longitude )</label>
                             </div>
 
                         </div>
@@ -323,20 +478,36 @@ class InsertModal extends Component {
                                         <div className="tab-content">
                                             <div className="tab-pane active" id="tab_15_1">
                                                 {/*Start Tab 1*/}
-                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                <div className={inputValidClass}>
                                                     <div className="input-group right-addon">
-                                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtDeviceId" name="txtDeviceId" />
-                                                        <label htmlFor="idTxtDeviceId">Device Id</label>
+                                                        <input value={this.state.tempDeviceId} readOnly={true} type="text" className="form-control" id="idTxtDeviceId" name="txtDeviceId" />
+                                                        <label htmlFor="idTxtDeviceId">Device Id: (tạm tính)</label>
                                                         <span className="input-group-addon">
-                                                            <i className="fa fa-check"></i>
+                                                            <i className={this.state.txtDeviceIdValid ? idValidClass : idNotValidClass}></i>
                                                         </span>
                                                     </div>
                                                 </div>
 
-                                                <div className="form-group form-md-line-input form-md-floating-label">
+                                                <div className={this.state.txtNameValid ? inputValidClass : inputNotValidClass}>
                                                     <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
                                                     <label htmlFor="idtxtName">Tên tủ báo cháy</label>
                                                 </div>
+                                                <div className="form-group form-md-line-input">
+                                                    <label htmlFor="auto-suggest-area" style={{ color: '#999', 'fontSize': '16px' }}>Chọn khu vực</label>
+                                                    <Autosuggest
+                                                        theme={themeAutoSuggest}
+                                                        suggestions={suggestions}
+                                                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                                                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                                                        onSuggestionSelected={this.onSuggestionSelected}
+                                                        getSuggestionValue={getSuggestionValue}
+                                                        renderSuggestion={renderSuggestion}
+                                                        inputProps={inputProps}
+                                                        alwaysRenderSuggestions={true}
+                                                        id="auto-suggest-area"
+                                                    />
+                                                </div>
+
                                                 <div className="form-group form-md-line-input form-md-floating-label">
                                                     <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
                                                     <label htmlFor="idtxtAddress">Địa chỉ</label>
@@ -349,12 +520,7 @@ class InsertModal extends Component {
                                                     <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
                                                     <label htmlFor="idtxtDesc">Mô tả</label>
                                                 </div>
-                                                <div className="form-group form-md-line-input form-md">
-                                                    <select onChange={this.handleChanged} className="form-control" id="idSelectArea" name="selectArea" >
-                                                        {optionsAreas}
-                                                    </select>
-                                                    <label htmlFor="idSelectArea">Khu vực</label>
-                                                </div>
+
                                                 <div className="form-group form-md-line-input form-md">
                                                     <select onChange={this.handleChanged} className="form-control" id="idSelectPhone" name="selectPhone" >
                                                         {options}

@@ -17,6 +17,24 @@ import DeviceLogModal from './DeviceLogModal';
 import MarkerDetailInfoModal from './MarkerDetailInfoModal';
 import Autosuggest from 'react-autosuggest';
 import MapStores from './MapStores';
+
+//Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
+const themeAutoSuggest = {
+    container: 'react-autosuggest__container_indexMap',
+    containerOpen: 'react-autosuggest__container--open_indexMap',
+    input: 'react-autosuggest__input_indexMap',
+    inputOpen: 'react-autosuggest__input--open_indexMap',
+    inputFocused: 'react-autosuggest__input--focused_indexMap',
+    suggestionsContainer: 'react-autosuggest__suggestions-container_indexMap',
+    suggestionsContainerOpen: 'react-autosuggest__suggestions-container--open_indexMap',
+    suggestionsList: 'react-autosuggest__suggestions-list_indexMap',
+    suggestion: 'react-autosuggest__suggestion_indexMap',
+    suggestionFirst: 'react-autosuggest__suggestion--first_indexMap',
+    suggestionHighlighted: 'react-autosuggest__suggestion--highlighted_indexMap',
+    sectionContainer: 'react-autosuggest__section-container_indexMap',
+    sectionContainerFirst: 'react-autosuggest__section-container--first_indexMap',
+    sectionTitle: 'react-autosuggest__section-title_indexMap'
+};
 var mapStores;
 
 /* global google */
@@ -35,14 +53,14 @@ const getSuggestions = value => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
 
-    return inputLength === 0 ? [] : listDevicesAutoCorrects.filter(item =>
-        item.name.toLowerCase().slice(0, inputLength) === inputValue //Tim theo ten
+    return inputLength === 0 ? listDevicesAutoCorrects : listDevicesAutoCorrects.filter(item =>
+        !_.isNull(item.name) && item.name.toLowerCase().slice(0, inputLength) === inputValue //Tim theo ten
         ||
-        item.phone.toLowerCase().slice(0, inputLength) === inputValue //Tim theo sdt
+        !_.isNull(item.phone) && item.phone.toLowerCase().slice(0, inputLength) === inputValue //Tim theo sdt
         ||
-        item.markerId.toLowerCase().slice(0, inputLength) === inputValue //Tim theo markerId
+        !_.isNull(item.markerId) && item.markerId.toLowerCase().slice(0, inputLength) === inputValue //Tim theo markerId
         ||
-        item.address.toLowerCase().slice(0, inputLength) === inputValue //Tim theo dia chi
+        !_.isNull(item.address) && item.address.toLowerCase().slice(0, inputLength) === inputValue //Tim theo dia chi
     );
 };
 
@@ -194,7 +212,7 @@ class IndexMap extends Component {
 
     //Suggestion
     onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-        this.setState({ deviceLog: [] ,center: { lat: suggestion.lat, lng: suggestion.long } });
+        this.setState({ deviceLog: [], center: { lat: suggestion.lat, lng: suggestion.long } });
         //Bat popup marker id da chon giong handleMarkerClick
         var self = this;
         var token = localStorage.getItem('token');
@@ -622,8 +640,46 @@ class IndexMap extends Component {
                         <Sound url="assets/ding.wav" playStatus="PLAYING" />
                         <p>{this.state.modalContent}</p>
                         <div>
-                            <label htmlFor="txtTxtFireNote">Ghi chú</label>
-                            <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
+                            <div className="tabbable-line">
+                                <ul className="nav nav-tabs ">
+                                    <li className="active">
+                                        <a href="#tab1" data-toggle="tab">
+                                            Thông tin chi tiết </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab2" data-toggle="tab">
+                                            Nhật ký </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab2" data-toggle="tab">
+                                            Dạng kiến trúc công trình </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab3" data-toggle="tab">
+                                            Đặc điểm giao thông xung quanh </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab4" data-toggle="tab">
+                                            Thông tin từ tủ </a>
+                                    </li>
+                                </ul>
+                                <div className="tab-content">
+                                    <div className="tab-pane active" id="tab1">
+                                        <img src="public/vncuba.jpg" width="100px" height="auto" />
+                                        <label htmlFor="txtTxtFireNote">Ghi chú</label>
+                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
+                                    </div>
+                                    <div className="tab-pane" id="tab2">
+                                        
+                                    </div>
+                                    <div className="tab-pane" id="tab3">
+                                    
+                                    </div>
+                                    <div className="tab-pane" id="tab4">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -644,6 +700,7 @@ class IndexMap extends Component {
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
                         <Autosuggest
+                            theme={themeAutoSuggest}
                             suggestions={suggestions}
                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
@@ -651,6 +708,8 @@ class IndexMap extends Component {
                             getSuggestionValue={getSuggestionValue}
                             renderSuggestion={renderSuggestion}
                             inputProps={inputProps}
+                            alwaysRenderSuggestions={true}
+
                         />
 
                         <GettingStartedGoogleMap
