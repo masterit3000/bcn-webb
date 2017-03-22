@@ -655,7 +655,7 @@ class IndexMap extends Component {
                                     </li>
                                     <li>
                                         <a href="#tab2" data-toggle="tab">
-                                            Trụ nước </a>
+                                            Nguồn nước </a>
                                     </li>
                                    
                                         <li>
