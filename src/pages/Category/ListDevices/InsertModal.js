@@ -195,12 +195,12 @@ class InsertModal extends Component {
 
     onSave(event) {
         //Danh sach gui tin sms
-        if (this.state.txtDeviceIdValid && this.state.txtLatitudeValid && this.state.txtLongitudeValid && this.state.txtNameValid) {
+        if (this.state.txtLatitudeValid && this.state.txtLongitudeValid && this.state.txtNameValid) {
             var sms = mobx.toJS(listDevicesStores.sms);
 
             var self = this;
             var postJson = {
-                markerId: this.state.txtDeviceId,
+                markerId: this.state.tempDeviceId,
                 name: this.state.txtName,
                 address: this.state.txtAddress,
                 phone: this.state.txtPhone,
