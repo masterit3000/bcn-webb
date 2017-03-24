@@ -18,6 +18,7 @@ import SysLog from './pages/SysLog/SysLog';
 import Account from './pages/Account/Account';
 import ChangePassword from './pages/Account/ChangePassword';
 import Buildings from './pages/Category/Buildings/Buildings';
+import FireHydrant from './pages/Category/FireHydrant/FireHydrant';
 
 ReactDOM.render(
   <IntlProvider locale="vi" messages={generatedMessages.translationMessages.vi}>
@@ -35,6 +36,7 @@ ReactDOM.render(
           <Route path="ChangePassword" component={ChangePassword} />
         </Route>
         <Route path="/Buildings" component={Buildings} />
+        <Route path="/FireHydrant" component={FireHydrant} />
         
       </Route>
       <Route path="/Login" component={Login}>
