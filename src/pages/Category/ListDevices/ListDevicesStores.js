@@ -18,7 +18,8 @@ class ListDevicesStores {
         { id: 9, phoneNo: "", name: "" },
         { id: 10, phoneNo: "", name: "" }
       ],
-      currentIndex: 11
+      currentIndex: 11,
+      thongTinCoSo: ''
     });
   }
 
@@ -54,6 +55,14 @@ class ListDevicesStores {
 
     ]);
     this.currentIndex = 11;
+  }
+
+  resetThongTinCoSo(){
+    this.thongTinCoSo = '';
+  }
+
+  updateThongTinCoSo(thongTinCoSo){
+    this.thongTinCoSo = thongTinCoSo;
   }
 
 }

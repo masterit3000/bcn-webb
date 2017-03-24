@@ -12,6 +12,8 @@ import ListDevicesStores from './ListDevicesStores';
 import { observer } from 'mobx-react';
 import mobx from 'mobx';
 import Autosuggest from 'react-autosuggest';
+import TabBaseInformations from './TabBaseInformations';
+import Dropzone from 'react-dropzone';
 
 /* global google */
 
@@ -136,7 +138,10 @@ class InsertModal extends Component {
             txtLongitudeValid: false,
             txtNameValid: false,
             selectArea: '',
-            tempDeviceId: ''
+            tempDeviceId: '',
+            selectAreaShortName: '',
+            uploadFiles: [],
+            uploadImagesUrl: ''
         };
         listDevicesStores = new ListDevicesStores();
         this.handlePlacesChanged = this.handlePlacesChanged.bind(this);
@@ -151,6 +156,38 @@ class InsertModal extends Component {
         this.loadAreas = this.loadAreas.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+    }
+
+
+    //Dropzone on drop
+    onDrop = function (acceptedFiles, rejectedFiles) {
+        this.setState({ uploadFiles: acceptedFiles });
+        if (acceptedFiles.length > 0) {
+            //Upload to server
+            var self = this;
+            var token = localStorage.getItem('token');
+
+            let data = new FormData();
+            let file = acceptedFiles[0];
+
+            data.append('files', file, file.name);
+
+            var instance = axios.create({
+                baseURL: Config.ServiceUrl,
+                timeout: 120 * 1000,
+                auth: {
+                    username: Config.basicAuthUsername,
+                    password: Config.basicAuthPassword
+                },
+                headers: { 'content-type': 'multipart/form-data' }
+            });
+
+            instance.post('/DeviceRoute/PhotoUpload', data).then(function (response) {
+                self.setState({ uploadImagesUrl: response.data.files });
+            });
+        }
+
     }
 
     //Suggestion changed
@@ -176,7 +213,8 @@ class InsertModal extends Component {
         var self = this;
         this.setState({
             selectArea: suggestion.id,
-            selectAreaName: suggestion.name
+            selectAreaName: suggestion.name,
+            selectAreaShortName: suggestion.shortName
         }, () => {
             self.getId();
         });
@@ -195,7 +233,7 @@ class InsertModal extends Component {
 
     onSave(event) {
         //Danh sach gui tin sms
-        if (this.state.txtLatitudeValid && this.state.txtLongitudeValid && this.state.txtNameValid) {
+        if (this.state.txtLatitudeValid && this.state.txtLongitudeValid && this.state.txtNameValid && _.toLength(this.state.selectPhone) > 0) {
             var sms = mobx.toJS(listDevicesStores.sms);
 
             var self = this;
@@ -210,17 +248,25 @@ class InsertModal extends Component {
                 desc: this.state.txtDesc,
                 area: this.state.selectArea,
                 areaName: this.state.selectAreaName,
-                sms: sms
+                sms: sms,
+                thongTinCoSo: listDevicesStores.thongTinCoSo,
+                shortName: this.state.selectAreaShortName,
+                thumbImg: this.state.uploadImagesUrl
             };
 
+            var token = localStorage.getItem('token');
 
             var instance = axios.create({
                 baseURL: Config.ServiceUrl,
-                timeout: Config.RequestTimeOut,
-                headers: { 'x-access-token': localStorage.getItem('token') }
+                timeout: 120 * 1000,
+                auth: {
+                    username: Config.basicAuthUsername,
+                    password: Config.basicAuthPassword
+                },
+                headers: { 'x-access-token': token }
             });
 
-            instance.post('/Common/InsertDeviceLocation', postJson)
+            instance.post('/DeviceRoute/InsertDeviceLocation', postJson)
                 .then(function (response) {
                     if (response.data.ResponseCode === 1) {
                         self.setState({ modalIsError: false, selectedLat: 0, selectedLong: 0 });
@@ -313,7 +359,7 @@ class InsertModal extends Component {
         var self = this;
         var token = localStorage.getItem('token');
         var json = {}
-        json.prefix = this.state.selectArea;
+        json.prefix = this.state.selectAreaShortName;
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
             timeout: Config.RequestTimeOut,
@@ -423,10 +469,7 @@ class InsertModal extends Component {
                                 </div>
                             ) : null
                         }
-
                         <div className="col-md-6">
-
-
                             <GettingStartedGoogleMap
                                 center={this.state.center}
                                 containerElement={
@@ -472,26 +515,42 @@ class InsertModal extends Component {
                                             </li>
                                             <li>
                                                 <a href="#tab_15_2" data-toggle="tab">
+                                                    Thông tin cơ sở</a>
+                                            </li>
+                                            <li>
+                                                <a href="#tab_15_3" data-toggle="tab">
                                                     SMS Báo cháy</a>
                                             </li>
                                         </ul>
                                         <div className="tab-content">
                                             <div className="tab-pane active" id="tab_15_1">
                                                 {/*Start Tab 1*/}
+                                                <div className="row">
+                                                    <div className="col-md-6">
+                                                        <Dropzone
+                                                            accept=".jpg,.png"
+                                                            className="btn btn-primary"
+                                                            multiple={false}
+                                                            onDrop={this.onDrop}
+                                                        >
+                                                            <div><i className="fa fa-upload"></i>
+                                                                &nbsp; &nbsp; Upload ảnh ... </div>
+                                                        </Dropzone>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        {/*Show image */}
+                                                        <div>{this.state.uploadFiles.map((file) => <img key={file.preview} width="150px" src={file.preview} />)}</div>
+                                                    </div>
+                                                </div>
+                                                <br />
+
                                                 <div className={inputValidClass}>
                                                     <div className="input-group right-addon">
                                                         <input value={this.state.tempDeviceId} readOnly={true} type="text" className="form-control" id="idTxtDeviceId" name="txtDeviceId" />
                                                         <label htmlFor="idTxtDeviceId">Device Id: (tạm tính)</label>
-                                                        <span className="input-group-addon">
-                                                            <i className={this.state.txtDeviceIdValid ? idValidClass : idNotValidClass}></i>
-                                                        </span>
                                                     </div>
                                                 </div>
 
-                                                <div className={this.state.txtNameValid ? inputValidClass : inputNotValidClass}>
-                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
-                                                    <label htmlFor="idtxtName">Tên tủ báo cháy</label>
-                                                </div>
                                                 <div className="form-group form-md-line-input">
                                                     <label htmlFor="auto-suggest-area" style={{ color: '#999', 'fontSize': '16px' }}>Chọn khu vực</label>
                                                     <Autosuggest
@@ -507,6 +566,12 @@ class InsertModal extends Component {
                                                         id="auto-suggest-area"
                                                     />
                                                 </div>
+
+                                                <div className={this.state.txtNameValid ? inputValidClass : inputNotValidClass}>
+                                                    <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
+                                                    <label htmlFor="idtxtName">Tên tủ báo cháy</label>
+                                                </div>
+
 
                                                 <div className="form-group form-md-line-input form-md-floating-label">
                                                     <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
@@ -529,8 +594,13 @@ class InsertModal extends Component {
                                                 </div>
                                                 {/*End Tab 1*/}
                                             </div>
-                                            {/* Tab 2 DS SO di dong nhan tin sms khi co bao chay*/}
+                                            {/* Tab 3 DS SO di dong nhan tin sms khi co bao chay*/}
                                             <div className="tab-pane" id="tab_15_2">
+                                                <TabBaseInformations store={listDevicesStores} />
+                                            </div>
+                                            {/*END DS SO di dong nhan tin sms*/}
+                                            {/* Tab 3 DS SO di dong nhan tin sms khi co bao chay*/}
+                                            <div className="tab-pane" id="tab_15_3">
                                                 <h4> Danh sách số di động nhận SMS khi có báo cháy</h4>
                                                 <TableSMS store={listDevicesStores} />
                                             </div>

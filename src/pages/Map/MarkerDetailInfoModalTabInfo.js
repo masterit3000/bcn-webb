@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
-
+import { Config } from '../../Config';
 class MarkerDetailInfoModalTabInfo extends Component {
     render() {
+        console.log(this.props.data.thumbImg);
         return (
+            
             <div>
-                <img src="public/vncuba.jpg" width="250px" height="auto" style={{display:'block', margin:'0 auto'}}/>
+                {
+                    this.props.data.thumbImg && this.props.data.thumbImg.length > 0
+                        ?
+                        <div>
+                            <img src={Config.ServiceUrl + "/uploads/DeviceThumb/" + this.props.data.thumbImg} width="300px" height="auto" style={{ display: 'block', margin: '0 auto' }} />
+                            <br />
+                            <br />
+                        </div>
+                        :
+                        ''
+                }
                 <br />
                 <ul className="list-group">
                     <li className="list-group-item">

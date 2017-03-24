@@ -11,3 +11,11 @@
 .modal-backdrop{
     z-index: 10;
 }
+.drop-zone-devices{
+    padding-top: 5px;
+    padding-left: 5px;
+    width: 100px;
+    height: 30px;
+    box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    border: 0 !important;
+}

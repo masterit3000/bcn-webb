@@ -5,7 +5,9 @@ import MarkerDetailInfoModalTabNearByLocations from './MarkerDetailInfoModalTabN
 import DeviceLogModalTable from './DeviceLogModalTable';
 import axios from 'axios';
 import { Config } from '../../Config';
-import {Table} from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
+import renderHTML from 'react-render-html';
+
 class MarkerDetailInfoModal extends Component {
 
     constructor(props) {
@@ -13,30 +15,33 @@ class MarkerDetailInfoModal extends Component {
         this.state = { deviceLogs: [] };
     };
 
-    
+    componentWillReceiveProps() {
+        // if (!this.props.data.markerId) {
+        //     //Load logs
+        //     var self = this;
+        //     var token = localStorage.getItem('token');
+        //     var json = {}
+        //     json.markerId = this.props.data.markerId;
+        //     var instance = axios.create({
+        //         baseURL: Config.ServiceUrl,
+        //         timeout: Config.RequestTimeOut,
+        //         auth: {
+        //             username: Config.basicAuthUsername,
+        //             password: Config.basicAuthPassword
+        //         },
+        //         headers: { 'x-access-token': token }
+        //     });
+
+        //     instance.post('/DeviceRoute/GetDeviceLogs', json).then(function (response) {
+
+        //         self.setState({ deviceLogs: response.data.data });
+        //     });
+        // }
+    }
+
     render() {
-        const { data, onHide, ...rest } = this.props;
-
-        //Load logs
-        var self = this;
-        var token = localStorage.getItem('token');
-        var json = {}
-        json.markerId = data.markerId;
-        var instance = axios.create({
-            baseURL: Config.ServiceUrl,
-            timeout: Config.RequestTimeOut,
-            auth: {
-                username: Config.basicAuthUsername,
-                password: Config.basicAuthPassword
-            },
-            headers: { 'x-access-token': token }
-        });
-
-        instance.post('/DeviceRoute/GetDeviceLogs', json).then(function (response) {
-
-            self.setState({ deviceLogs: response.data.data });
-        });
-
+        const { data, dataHistory, onHide, ...rest } = this.props;
+       
         return (
             <Modal {...rest} bsSize="large" aria-labelledby="contained-modal-title-lg">
                 <Modal.Header>
@@ -57,9 +62,9 @@ class MarkerDetailInfoModal extends Component {
                             </li>
                             <li>
                                 <a href="#tab3" data-toggle="tab">
-                                   Nguồn nước </a>
+                                    Nguồn nước </a>
                             </li>
-                         
+
                             <li>
                                 <a href="#tab4" data-toggle="tab">
                                     Thông tin cơ sở </a>
@@ -70,54 +75,47 @@ class MarkerDetailInfoModal extends Component {
                                 <MarkerDetailInfoModalTabInfo data={data} />
                             </div>
                             <div className="tab-pane" id="tab2">
-                                <DeviceLogModalTable logs={this.state.deviceLogs} />
+                                <DeviceLogModalTable logs={this.props.dataHistory} />
                             </div>
                             <div className="tab-pane" id="tab3">
                                 <Table striped bordered condensed hover>
-                                            <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>
-                                                    Tên trụ nước
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                Tên trụ nước
                                                 </th>
-                                                <th>Vị trí</th>
-                                                <th>Khoảng cách</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Trụ 002</td>
-                                                <td>Số 3 Trần Phú</td>
-                                                <td>30m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Trụ 103</td>
-                                                <td>Trong bệnh Viện</td>
-                                                <td>100m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Trụ 70</td>
-                                                <td>30 Trần Phú</td>
-                                                <td>150m</td>
-                                            </tr>
-                                            </tbody>
-                                        </Table>
+                                            <th>Vị trí</th>
+                                            <th>Khoảng cách</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Trụ 002</td>
+                                            <td>Số 3 Trần Phú</td>
+                                            <td>30m</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Trụ 103</td>
+                                            <td>Trong bệnh Viện</td>
+                                            <td>100m</td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>Trụ 70</td>
+                                            <td>30 Trần Phú</td>
+                                            <td>150m</td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
                                 {/*<MarkerDetailInfoModalTabNearByLocations lat={data.lat} long={data.long} radius="500" />*/}
                             </div>
                             <div className="tab-pane" id="tab4">
-                               <p>
-                                            - Công trình cao 10 tầng<br />
-                                            - Khối tích: 6000m3<br />
-                                            - Số lượng người thường trực: 50 người<br />
-                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="300px" height="auto" /><br /><br />
-                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="300px" height="auto" />
-
-                                </p>
+                                {data.thongTinCoSo ? renderHTML(data.thongTinCoSo) : ''}
                             </div>
                         </div>
                     </div>

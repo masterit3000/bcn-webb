@@ -7,6 +7,9 @@ import { ListDevicesConst } from './ListDevicesConst';
 import ListDeviceTable from './ListDeviceTable';
 import InsertModal from './InsertModal';
 import _ from 'lodash';
+import TabBaseInformations from './TabBaseInformations';
+import './customQuill.css';
+import { browserHistory } from 'react-router';
 
 class ListDevices extends Component {
     constructor(props) {
@@ -15,7 +18,7 @@ class ListDevices extends Component {
         this.showInsertModal = this.showInsertModal.bind(this);
         this.closeInsertModal = this.closeInsertModal.bind(this);
         this.loadData = this.loadData.bind(this);
-       
+
     }
 
     showInsertModal() {
@@ -24,6 +27,7 @@ class ListDevices extends Component {
 
     closeInsertModal() {
         this.setState({ isShowInsertModal: false });
+        browserHistory.push('/ListDevices');
     }
 
     loadData() {
@@ -79,6 +83,7 @@ class ListDevices extends Component {
                                 </div>
                             </div>
                         </div>
+
                         {/*<!-- END PAGE CONTENT INNER -->*/}
                     </div>
                 </div>

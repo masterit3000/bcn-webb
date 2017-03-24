@@ -17,7 +17,8 @@ import DeviceLogModal from './DeviceLogModal';
 import MarkerDetailInfoModal from './MarkerDetailInfoModal';
 import Autosuggest from 'react-autosuggest';
 import MapStores from './MapStores';
-import {Table} from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
+import renderHTML from 'react-render-html';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -229,7 +230,22 @@ class IndexMap extends Component {
             headers: { 'x-access-token': token }
         });
         instance.post('/DeviceRoute/GetMarkerById', json).then(function (response) {
-            self.setState({ markerDetailInfoModalData: response.data.data, showMarkerDetailLogModal: true });
+            //Lay ve history 
+            var json2 = {}
+            json2.markerId = suggestion.markerId;
+            var instance2 = axios.create({
+                baseURL: Config.ServiceUrl,
+                timeout: Config.RequestTimeOut,
+                auth: {
+                    username: Config.basicAuthUsername,
+                    password: Config.basicAuthPassword
+                },
+                headers: { 'x-access-token': token }
+            });
+
+            instance2.post('/DeviceRoute/GetDeviceLogs', json2).then(function (response2) {
+                self.setState({ markerDetailInfoModalData: response.data.data, markerDetailInfoModalDataHistory: response2.data.data, showMarkerDetailLogModal: true });
+            });
         });
     }
 
@@ -314,7 +330,6 @@ class IndexMap extends Component {
             _.forEach(arrListDevices, function (value) {
                 if (_.isEqual(value.MarkerId, arrListDevices.MarkerId)) {
                     if (data.isFire) {
-                        console.log(data);
                         self.setState({
                             showModal: true,
                             txtTxtFireNote: '',
@@ -325,6 +340,8 @@ class IndexMap extends Component {
                             modalContentDesc: data.doc.desc,
                             modalContentImei: data.doc.imei,
                             modalContentId: data.markerId,
+                            modalContentThumbImg: data.thumbImg,
+                            modalContentThongTinCoSo: data.thongTinCoSo,
                             fireHistoryId: data.fireHistoryId
                         });
                         self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
@@ -465,7 +482,22 @@ class IndexMap extends Component {
             headers: { 'x-access-token': token }
         });
         instance.post('/DeviceRoute/GetMarkerById', json).then(function (response) {
-            self.setState({ markerDetailInfoModalData: response.data.data, showMarkerDetailLogModal: true });
+            //Lay ve history 
+            var json2 = {}
+            json2.markerId = targetMarker.markerId;
+            var instance2 = axios.create({
+                baseURL: Config.ServiceUrl,
+                timeout: Config.RequestTimeOut,
+                auth: {
+                    username: Config.basicAuthUsername,
+                    password: Config.basicAuthPassword
+                },
+                headers: { 'x-access-token': token }
+            });
+
+            instance2.post('/DeviceRoute/GetDeviceLogs', json2).then(function (response2) {
+                self.setState({ markerDetailInfoModalData: response.data.data, markerDetailInfoModalDataHistory: response2.data.data, showMarkerDetailLogModal: true });
+            });
         });
     }
 
@@ -556,8 +588,6 @@ class IndexMap extends Component {
         });
         this.setState({ showModal: false });
     }
-
-
 
     //close the log modal
     closeLogModal() {
@@ -657,18 +687,25 @@ class IndexMap extends Component {
                                         <a href="#tab2" data-toggle="tab">
                                             Nguồn nước </a>
                                     </li>
-                                   
-                                        <li>
+
+                                    <li>
                                         <a href="#tab3" data-toggle="tab">
-                                           Thông tin cơ sở </a>
+                                            Thông tin cơ sở </a>
                                     </li>
                                 </ul>
                                 <div className="tab-content">
                                     <div className="tab-pane active" id="tab1">
-                                        <img src="public/vncuba.jpg" width="300px" height="auto" style={{display:'block', margin:'0 auto'}}/>
-
-                                        <br />
-                                        <br />
+                                        {
+                                            this.state.modalContentThumbImg && this.state.modalContentThumbImg.length > 0
+                                                ?
+                                                <div>
+                                                    <img src={Config.ServiceUrl + "/uploads/DeviceThumb/" + this.state.modalContentThumbImg} width="300px" height="auto" style={{ display: 'block', margin: '0 auto' }} />
+                                                    <br />
+                                                    <br />
+                                                </div>
+                                                :
+                                                ''
+                                        }
                                         <ul className="list-group">
                                             <li className="list-group-item">
                                                 <div className="row">
@@ -712,7 +749,7 @@ class IndexMap extends Component {
                                                     </div>
                                                 </div>
                                             </li>
-                                            
+
                                             <li className="list-group-item">
                                                 <div className="row">
                                                     <div className="col-md-2">
@@ -729,52 +766,45 @@ class IndexMap extends Component {
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
                                     </div>
                                     <div className="tab-pane" id="tab2">
-                                         <Table striped bordered condensed hover>
+                                        <Table striped bordered condensed hover>
                                             <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>
-                                                    Tên trụ nước
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>
+                                                        Tên trụ nước
                                                 </th>
-                                                <th>Vị trí</th>
-                                                <th>Khoảng cách</th>
-                                            </tr>
+                                                    <th>Vị trí</th>
+                                                    <th>Khoảng cách</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Trụ 002</td>
-                                                <td>Số 3 Trần Phú</td>
-                                                <td>30m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Trụ 103</td>
-                                                <td>Trong bệnh Viện</td>
-                                                <td>100m</td>
-                                               
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Trụ 70</td>
-                                                <td>30 Trần Phú</td>
-                                                <td>150m</td>
-                                            </tr>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Trụ 002</td>
+                                                    <td>Số 3 Trần Phú</td>
+                                                    <td>30m</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Trụ 103</td>
+                                                    <td>Trong bệnh Viện</td>
+                                                    <td>100m</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Trụ 70</td>
+                                                    <td>30 Trần Phú</td>
+                                                    <td>150m</td>
+                                                </tr>
                                             </tbody>
                                         </Table>
                                     </div>
                                     <div className="tab-pane" id="tab3">
-                                        <p>
-                                            - Đây là công trình cao 10 tầng<br />
-                                            - Khối tích: 6000m3<br />
-                                            - Số lượng người thường trực: 50 người<br />
-                                            <img src="http://eurowindow.biz/Uploads/_2016/benh-vien-vn-cuba.gif" width="300px" height="auto" /><br /><br />
-                                            <img src="http://dantri4.vcmedia.vn/6DQQJ7yW5QPfG6EzuGal/Image/2013/09/3-ad235.jpg" width="300px" height="auto" />
-
-                                        </p>
+                                        {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -792,7 +822,7 @@ class IndexMap extends Component {
                 </ToastContainer>
 
                 {/*<DeviceLogModal logs={this.state.deviceLog} show={this.state.showLogModal} onHide={this.closeLogModal} />*/}
-                <MarkerDetailInfoModal show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} onHide={this.closeMarkerDetailLogModal} />
+                <MarkerDetailInfoModal show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
 
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
@@ -806,7 +836,6 @@ class IndexMap extends Component {
                             renderSuggestion={renderSuggestion}
                             inputProps={inputProps}
                             alwaysRenderSuggestions={true}
-
                         />
 
                         <GettingStartedGoogleMap
