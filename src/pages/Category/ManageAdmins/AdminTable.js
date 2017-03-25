@@ -42,7 +42,7 @@ function onAfterDeleteRow(rowKeys) {
 
     var token = localStorage.getItem('token');
     var instance = axios.create({
-        baseURL: Config.apiUrl,
+        baseURL: Config.ServiceUrl,
         timeout: Config.RequestTimeOut,
         headers: { 'x-access-token': token }
     });

@@ -5,11 +5,14 @@ import mobx from 'mobx';
 class FireHydrantStores {
     constructor() {
         extendObservable(this, {
-           fireHydrantTableData: []
+            isShowInsertModal: false,
+            isShowUpdateModal: false,
+            fireHydrantTableData: [],
+            updateData: {}
         });
     }
 
-    updateFireHydrantTableData(data){
+    updateFireHydrantTableData(data) {
         this.fireHydrantTableData.replace(data);
     }
 
