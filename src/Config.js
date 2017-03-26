@@ -6,5 +6,6 @@ export const Config = {
     //SocketUrl: 'http://localhost:8899',
     RequestTimeOut: 10000,
     basicAuthUsername: 'pccc',
-    basicAuthPassword: 'basicAuthPassword'
+    basicAuthPassword: 'basicAuthPassword',
+    distanceFireHydrant: 500
 };

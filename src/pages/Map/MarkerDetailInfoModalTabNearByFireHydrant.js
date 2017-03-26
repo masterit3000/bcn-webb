@@ -18,7 +18,7 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
         json.lat = props.lat;
         json.long = props.long;
         json.distance = props.distance;
-
+  //
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
             timeout: Config.RequestTimeOut,
@@ -28,7 +28,9 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
             },
             headers: { 'x-access-token': token }
         });
+
         instance.post('/FireHydrant/NearByFireHydrant', json).then(function (response) {
+            console.log(response.data.data);
             self.setState({ datas: response.data.data });
         });
     }
@@ -39,7 +41,6 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                 data={this.state.datas}
                 deleteRow={false}
                 insertRow={false}
-                cellEdit={false}
                 search={true}
                 pagination
                 striped
@@ -53,9 +54,13 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                 <TableHeaderColumn dataField='address'>
                     Địa chỉ
                     </TableHeaderColumn>
+                <TableHeaderColumn dataField='distance'>
+                    Khoảng cách
+                    </TableHeaderColumn>
                 <TableHeaderColumn dataField='desc'>
                     Mô tả
                     </TableHeaderColumn>
+
             </BootstrapTable>
         );
     }
