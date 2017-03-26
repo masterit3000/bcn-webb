@@ -343,8 +343,8 @@ class IndexMap extends Component {
                             modalContentId: data.markerId,
                             modalContentThumbImg: data.thumbImg,
                             modalContentThongTinCoSo: data.thongTinCoSo,
-                            modalContentLat: data.lat,
-                            modalContentLong: data.long,
+                            modalContentLat: data.doc.lat,
+                            modalContentLong: data.doc.long,
                             fireHistoryId: data.fireHistoryId
                         });
                         self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
@@ -771,7 +771,7 @@ class IndexMap extends Component {
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
                                     </div>
                                     <div className="tab-pane" id="tab2">
-                                        <MarkerDetailInfoModalTabNearByFireHydrant lat={this.state.modalContentLat} long={this.state.modalContentLat} distance={Config.distanceFireHydrant} />
+                                        <MarkerDetailInfoModalTabNearByFireHydrant lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
                                     </div>
                                     <div className="tab-pane" id="tab3">
                                         {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
