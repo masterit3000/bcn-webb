@@ -18,7 +18,7 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
         json.lat = props.lat;
         json.long = props.long;
         json.distance = props.distance;
-  
+  //
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
             timeout: Config.RequestTimeOut,
