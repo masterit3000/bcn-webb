@@ -118,13 +118,13 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
             inputPlaceholder="Tìm kiếm địa điểm"
             inputStyle={INPUT_STYLE}
         />*/}
-        {props.markerPlace.map((marker, index) => (
+        {/*{props.markerPlace.map((marker, index) => (
             <Marker
                 key={index}
                 position={marker.position}
             >
             </Marker>
-        ))}
+        ))}*/}
         {props.markers.map((marker, index) => (
             <Marker
                 icon={{
@@ -407,6 +407,7 @@ class IndexMap extends Component {
             });
         });
 
+        //Lay danh sach marker tren ban do
         var token = localStorage.getItem('token');
         var instance = axios.create({
             baseURL: Config.ServiceUrl,
@@ -417,6 +418,7 @@ class IndexMap extends Component {
             },
             headers: { 'x-access-token': token }
         });
+
         instance.get('/MainMap/ListDevices').then(function (response) {
             //vi tri dau tien ma user theo doi ma he thong tim duoc
             var firstLoadLat = _.toNumber(response.data.lat);
@@ -821,7 +823,6 @@ class IndexMap extends Component {
                     <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
                 </ToastContainer>
 
-                {/*<DeviceLogModal logs={this.state.deviceLog} show={this.state.showLogModal} onHide={this.closeLogModal} />*/}
                 <MarkerDetailInfoModal show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
 
                 <div className="page-content" style={{ padding: "0px" }}>

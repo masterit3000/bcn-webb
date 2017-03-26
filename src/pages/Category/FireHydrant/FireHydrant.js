@@ -58,7 +58,7 @@ class FireHydrant extends Component {
                                     </div>
                                     <div className="portlet-body">
                                         <div className="portlet-body">
-                                            <FireHydrantTable stores={fireHydrantStores} />
+                                            <FireHydrantTable loadData={this.loadData} stores={fireHydrantStores} />
                                         </div>
                                     </div>
                                 </div>

@@ -6,7 +6,6 @@ import SearchBox from "react-google-maps/lib/places/SearchBox";
 import axios from 'axios';
 import { Config } from '../../../Config';
 import mobx from 'mobx';
-
 import _ from 'lodash';
 
 /* global google */
@@ -86,11 +85,24 @@ class FireHydrantUpdateModal extends Component {
 
     componentWillReceiveProps(props) {
         var cloneUpdateData = mobx.toJS(props.stores.updateData);
-        
+
         this.setState({
-            center: { lat: _.toNumber(cloneUpdateData.lat), lng: _.toNumber(cloneUpdateData) },
-            txtName: cloneUpdateData.name
+            center: { lat: _.toNumber(cloneUpdateData.lat), lng: _.toNumber(cloneUpdateData.long) },
+            txtName: cloneUpdateData.name,
+            txtAddress: cloneUpdateData.address,
+            txtDesc: cloneUpdateData.desc,
+            selectedLat: cloneUpdateData.lat,
+            selectedLong: cloneUpdateData.long,
+            id: cloneUpdateData._id,
+            markerPlace: {
+                position: { lat: cloneUpdateData.lat, lng: cloneUpdateData.long },
+                key: Date.now,
+                defaultAnimation: 2,
+                txtLatitudeValid: true,
+                txtLongtitudeValid: true
+            },
         });
+
     }
 
     onSave(e) {
@@ -102,6 +114,7 @@ class FireHydrantUpdateModal extends Component {
             var self = this;
             var token = localStorage.getItem('token');
             var json = {}
+            json.id = this.state.id;
             json.name = this.state.txtName;
             json.address = this.state.txtAddress;
             json.desc = this.state.txtDesc;
@@ -117,9 +130,10 @@ class FireHydrantUpdateModal extends Component {
                 },
                 headers: { 'x-access-token': token }
             });
-            instance.post('/FireHydrant/InsertFireHydrant', json).then(function (response) {
+            instance.post('/FireHydrant/UpdateFireHydrant', json).then(function (response) {
                 self.props.stores.isShowUpdateModal = false;
-                // self.props.loadData();
+                console.log(self.props);
+                self.props.loadData();
             });
         } else {
             alert('Bạn chưa nhập hết các trường yêu cầu ( tên, địa chỉ, bản đồ )');
@@ -128,7 +142,6 @@ class FireHydrantUpdateModal extends Component {
 
     onClose(e) {
         this.props.stores.isShowUpdateModal = false;
-        // this.props.loadData();
     }
 
     handleChanged(e) {
@@ -171,9 +184,10 @@ class FireHydrantUpdateModal extends Component {
     }
 
     render() {
-        const { stores, ...rest } = this.props;
+        const { loadData, stores, ...rest } = this.props;
 
         return (
+
             <Modal {...rest} onHide={this.onClose} bsSize="large" aria-labelledby="contained-modal-title-lg">
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-lg"><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Chỉnh sửa nguồn nước {stores.updateData.name}</Modal.Title>
@@ -201,28 +215,29 @@ class FireHydrantUpdateModal extends Component {
                             />
 
                         </div>
+                        <input type="hidden" value={this.state.id} />
                         <div className="col-md-6">
-                            <div className="form-group form-md-line-input form-md-floating-label">
-                                <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
+                            <div className="form-group form-md-line-input">
+                                <input value={this.state.txtName} onChange={this.handleChanged} type="text" className="form-control" id="idtxtName" name="txtName" />
                                 <label htmlFor="idtxtName">Tên trụ nước</label>
                             </div>
 
-                            <div className="form-group form-md-line-input form-md-floating-label">
-                                <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
+                            <div className="form-group form-md-line-input">
+                                <input value={this.state.txtAddress} onChange={this.handleChanged} type="text" className="form-control" id="idtxtAddress" name="txtAddress" />
                                 <label htmlFor="idtxtAddress">Địa chỉ</label>
                             </div>
 
-                            <div className="form-group form-md-line-input form-md-floating-label">
-                                <input onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
+                            <div className="form-group form-md-line-input">
+                                <input value={this.state.txtDesc} onChange={this.handleChanged} type="text" className="form-control" id="idtxtDesc" name="txtDesc" />
                                 <label htmlFor="idtxtDesc">Mô tả</label>
                             </div>
 
                             <div className="form-group form-md-line-input">
-                                <input type="text" disabled className="form-control" value={this.state.selectedLat} id="idLatitude" name="txtLatitude" />
+                                <input value={this.state.selectedLat} type="text" disabled className="form-control" id="idLatitude" name="txtLatitude" />
                                 <label htmlFor="idLatitude">Kinh độ ( Latitude )</label>
                             </div>
                             <div className="form-group form-md-line-input">
-                                <input type="text" disabled className="form-control" value={this.state.selectedLong} id="idLongitude" name="txtLongitude" />
+                                <input type="text" value={this.state.selectedLong} disabled className="form-control" id="idLongitude" name="txtLongitude" />
                                 <label htmlFor="idLongitude">Vĩ độ ( Longtitude )</label>
                             </div>
                         </div>

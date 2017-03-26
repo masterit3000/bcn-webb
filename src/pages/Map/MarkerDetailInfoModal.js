@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import MarkerDetailInfoModalTabInfo from './MarkerDetailInfoModalTabInfo';
-import MarkerDetailInfoModalTabNearByLocations from './MarkerDetailInfoModalTabNearByLocations';
+import MarkerDetailInfoModalTabNearByFireHydrant from './MarkerDetailInfoModalTabNearByFireHydrant';
 import DeviceLogModalTable from './DeviceLogModalTable';
 import axios from 'axios';
 import { Config } from '../../Config';
@@ -41,7 +41,7 @@ class MarkerDetailInfoModal extends Component {
 
     render() {
         const { data, dataHistory, onHide, ...rest } = this.props;
-       
+
         return (
             <Modal {...rest} bsSize="large" aria-labelledby="contained-modal-title-lg">
                 <Modal.Header>
@@ -78,41 +78,7 @@ class MarkerDetailInfoModal extends Component {
                                 <DeviceLogModalTable logs={this.props.dataHistory} />
                             </div>
                             <div className="tab-pane" id="tab3">
-                                <Table striped bordered condensed hover>
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>
-                                                Tên trụ nước
-                                                </th>
-                                            <th>Vị trí</th>
-                                            <th>Khoảng cách</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Trụ 002</td>
-                                            <td>Số 3 Trần Phú</td>
-                                            <td>30m</td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Trụ 103</td>
-                                            <td>Trong bệnh Viện</td>
-                                            <td>100m</td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Trụ 70</td>
-                                            <td>30 Trần Phú</td>
-                                            <td>150m</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                                {/*<MarkerDetailInfoModalTabNearByLocations lat={data.lat} long={data.long} radius="500" />*/}
+                                <MarkerDetailInfoModalTabNearByFireHydrant lat={data.lat} long={data.long} distance="500" />
                             </div>
                             <div className="tab-pane" id="tab4">
                                 {data.thongTinCoSo ? renderHTML(data.thongTinCoSo) : ''}

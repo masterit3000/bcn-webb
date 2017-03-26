@@ -98,7 +98,7 @@ class FireHydrantTable extends Component {
         };
         return (
             <div>
-                <FireHydrantUpdateModal show={this.props.stores.isShowUpdateModal} stores={this.props.stores} />
+                <FireHydrantUpdateModal show={this.props.stores.isShowUpdateModal} stores={this.props.stores} loadData={this.props.loadData} />
 
                 <BootstrapTable
                     data={this.props.stores.fireHydrantTableData}
