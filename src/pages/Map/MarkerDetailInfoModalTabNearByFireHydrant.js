@@ -53,9 +53,13 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                 <TableHeaderColumn dataField='address'>
                     Địa chỉ
                     </TableHeaderColumn>
+                <TableHeaderColumn dataField='distance'>
+                    Khoảng cách
+                    </TableHeaderColumn>
                 <TableHeaderColumn dataField='desc'>
                     Mô tả
                     </TableHeaderColumn>
+                
             </BootstrapTable>
         );
     }

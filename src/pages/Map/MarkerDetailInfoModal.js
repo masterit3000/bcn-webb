@@ -78,7 +78,7 @@ class MarkerDetailInfoModal extends Component {
                                 <DeviceLogModalTable logs={this.props.dataHistory} />
                             </div>
                             <div className="tab-pane" id="tab3">
-                                <MarkerDetailInfoModalTabNearByFireHydrant lat={data.lat} long={data.long} distance="500" />
+                                <MarkerDetailInfoModalTabNearByFireHydrant lat={data.lat} long={data.long} distance={Config.distanceFireHydrant} />
                             </div>
                             <div className="tab-pane" id="tab4">
                                 {data.thongTinCoSo ? renderHTML(data.thongTinCoSo) : ''}

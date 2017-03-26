@@ -19,6 +19,7 @@ import Autosuggest from 'react-autosuggest';
 import MapStores from './MapStores';
 import { Table } from 'react-bootstrap';
 import renderHTML from 'react-render-html';
+import MarkerDetailInfoModalTabNearByFireHydrant from './MarkerDetailInfoModalTabNearByFireHydrant';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -342,6 +343,8 @@ class IndexMap extends Component {
                             modalContentId: data.markerId,
                             modalContentThumbImg: data.thumbImg,
                             modalContentThongTinCoSo: data.thongTinCoSo,
+                            modalContentLat: data.lat,
+                            modalContentLong: data.long,
                             fireHistoryId: data.fireHistoryId
                         });
                         self.showToast(TOAST_ERROR, 'Cảnh báo cháy', data.doc.name);
@@ -768,40 +771,7 @@ class IndexMap extends Component {
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
                                     </div>
                                     <div className="tab-pane" id="tab2">
-                                        <Table striped bordered condensed hover>
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>
-                                                        Tên trụ nước
-                                                </th>
-                                                    <th>Vị trí</th>
-                                                    <th>Khoảng cách</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Trụ 002</td>
-                                                    <td>Số 3 Trần Phú</td>
-                                                    <td>30m</td>
-
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Trụ 103</td>
-                                                    <td>Trong bệnh Viện</td>
-                                                    <td>100m</td>
-
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>Trụ 70</td>
-                                                    <td>30 Trần Phú</td>
-                                                    <td>150m</td>
-                                                </tr>
-                                            </tbody>
-                                        </Table>
+                                        <MarkerDetailInfoModalTabNearByFireHydrant lat={this.state.modalContentLat} long={this.state.modalContentLat} distance={Config.distanceFireHydrant} />
                                     </div>
                                     <div className="tab-pane" id="tab3">
                                         {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
