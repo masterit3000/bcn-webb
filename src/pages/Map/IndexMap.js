@@ -10,6 +10,7 @@ import SearchBox from "react-google-maps/lib/places/SearchBox";
 import fireMarker from './fire.png';
 import normalMarker from './normal-marker.png';
 import offlineMarker from './offline-marker.png';
+import fireHydrantMarkerImg from './fire-hydrant.png';
 import { ToastContainer, ToastMessage } from "react-toastr";
 import _ from 'lodash';
 import './indexMap.css';
@@ -126,6 +127,38 @@ const GettingStartedGoogleMap = withGoogleMap(props => (
             >
             </Marker>
         ))}*/}
+
+        {
+            props.fireHydrantsMarkers.map((fireHydrantsMarker, index) => (
+                <Marker
+                    icon={{
+                        url: fireHydrantMarkerImg
+                    }}
+                    key={index}
+                    options={{ optimized: false }}
+                    animation={4}
+                    position={new google.maps.LatLng(fireHydrantsMarker.lat, fireHydrantsMarker.long)}
+                    onMouseOut={() => props.onFireHydrantMarkerMouseOut(fireHydrantsMarker)}
+                    onMouseOver={() => props.onFireHydrantMarkerMouseOver(fireHydrantsMarker)}
+                > {fireHydrantsMarker.showInfo && (
+                    <InfoWindow>
+                        <ul className="list-group">
+                            <li className="list-group-item" style={listGroupItemStyle}>
+                                <i className="fa fa-info"></i>{fireHydrantsMarker.name}
+                            </li>
+                            <li className="list-group-item" style={listGroupItemStyle}>
+                                <i className="fa fa-location-arrow"></i> {fireHydrantsMarker.address}
+                            </li>
+                            <li className="list-group-item" style={listGroupItemStyle}>
+                                <i className="fa fa-file-text"></i>{fireHydrantsMarker.desc}
+                            </li>
+                        </ul>
+                    </InfoWindow>
+                )}
+                </Marker>
+            ))
+        }
+
         {props.markers.map((marker, index) => (
             <Marker
                 icon={{
@@ -185,6 +218,7 @@ class IndexMap extends Component {
             listDevices: [],
             markers: [],
             markerPlace: [],
+            fireHydrantsMarkers: [],
             deviceLog: [],
             fireHistoryId: '',
             center: { lat: 21.028952, lng: 105.852394 },
@@ -211,6 +245,9 @@ class IndexMap extends Component {
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
         this.handleMarkerOnMouseOut = this.handleMarkerOnMouseOut.bind(this);
         this.handleMarkerOnMouseOver = this.handleMarkerOnMouseOver.bind(this);
+        this.handleFireHydrantMarkerOnMouseOut = this.handleFireHydrantMarkerOnMouseOut.bind(this);
+        this.handleFireHydrantMarkerOnMouseOver = this.handleFireHydrantMarkerOnMouseOver.bind(this);
+        this.getFireHydrants = this.getFireHydrants.bind(this);
     }
 
     //Suggestion
@@ -463,6 +500,24 @@ class IndexMap extends Component {
 
             self.setState({ markers: tempMarkers });
         });
+        this.getFireHydrants();
+    }
+
+    getFireHydrants() {
+        var self = this;
+        var token = localStorage.getItem('token');
+        var instance = axios.create({
+            baseURL: Config.ServiceUrl,
+            timeout: Config.RequestTimeOut,
+            auth: {
+                username: Config.basicAuthUsername,
+                password: Config.basicAuthPassword
+            },
+            headers: { 'x-access-token': token }
+        });
+        instance.get('/FireHydrant/GetFireHyrant').then(function (response) {
+            self.setState({ fireHydrantsMarkers: response.data.data });
+        });
     }
 
     handleChanged(e) {
@@ -548,6 +603,34 @@ class IndexMap extends Component {
         });
     }
 
+    handleFireHydrantMarkerOnMouseOut(targetMarker) {
+        this.setState({
+            fireHydrantsMarkers: this.state.fireHydrantsMarkers.map(marker => {
+                if (marker === targetMarker) {
+                    return {
+                        ...marker,
+                        showInfo: false,
+                    };
+                }
+                return marker;
+            }),
+        });
+    }
+
+    handleFireHydrantMarkerOnMouseOver(targetMarker) {
+        this.setState({
+            fireHydrantsMarkers: this.state.fireHydrantsMarkers.map(marker => {
+                if (marker === targetMarker) {
+                    return {
+                        ...marker,
+                        showInfo: true,
+                    };
+                }
+                return marker;
+            }),
+        });
+    }
+
     handleMapMounted(map) {
         this._map = map;
     }
@@ -559,20 +642,20 @@ class IndexMap extends Component {
     }
 
     handlePlacesChanged() {
-        const places = this._searchBox.getPlaces();
+        // const places = this._searchBox.getPlaces();
 
         // Add a marker for each place returned from search bar
-        const markerPlaces = places.map(place => ({
-            position: place.geometry.location
-        }));
+        // const markerPlaces = places.map(place => ({
+        //     position: place.geometry.location
+        // }));
 
         // Set markers; set map center to first search result
-        var firstPlaceLat = places[0].geometry.location.lat();
-        var firstPlaceLong = places[0].geometry.location.lng();
-        this.setState({
-            center: { lat: firstPlaceLat, lng: firstPlaceLong },
-            markerPlace: markerPlaces
-        });
+        // var firstPlaceLat = places[0].geometry.location.lat();
+        // var firstPlaceLong = places[0].geometry.location.lng();
+        // this.setState({
+        //     center: { lat: firstPlaceLat, lng: firstPlaceLong },
+        //     // markerPlace: markerPlaces
+        // });
     }
 
     //Close the alert dialog
@@ -823,6 +906,9 @@ class IndexMap extends Component {
                             markerPlace={
                                 this.state.markerPlace
                             }
+                            fireHydrantsMarkers={
+                                this.state.fireHydrantsMarkers
+                            }
                             onMapMounted={this.handleMapMounted}
                             onBoundsChanged={this.handleBoundsChanged}
                             bounds={this.state.bounds}
@@ -832,6 +918,8 @@ class IndexMap extends Component {
                             onMarkerClose={this.handleMarkerClose}
                             onMarkerMouseOut={this.handleMarkerOnMouseOut}
                             onMarkerMouseOver={this.handleMarkerOnMouseOver}
+                            onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
+                            onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
                         />
 
                     </div>
