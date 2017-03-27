@@ -51,7 +51,10 @@ class Menu extends Component {
                                             <i className="fa fa-building-o"></i>&nbsp;
                                             Dạng kiến trúc công trình
                                         </Link>
-                                         <Link to="/FireHydrant">
+
+                                    </li>
+                                    <li className="dropdown">
+                                        <Link to="/FireHydrant">
                                             <i className="fa fa-tint"></i>&nbsp;
                                            Quản lý nguồn nước
                                         </Link>
