@@ -135,7 +135,7 @@ class LoginContainer extends Component {
             <div className="page-md login login-s">
                 <div className="logo">
                     <a href="/Login">
-                        <h1>PCCC</h1>
+                        <h1>Báo cháy nhanh trực tuyến</h1>
                     </a>
 
                 </div>
@@ -216,6 +216,7 @@ class LoginContainer extends Component {
                 <div className="copyright">
                     2017 &copy; PCCC
                 </div>
+                
             </div>
         );
     }

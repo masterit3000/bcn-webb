@@ -21,6 +21,7 @@ import MapStores from './MapStores';
 import { Table } from 'react-bootstrap';
 import renderHTML from 'react-render-html';
 import MarkerDetailInfoModalTabNearByFireHydrant from './MarkerDetailInfoModalTabNearByFireHydrant';
+import { observer } from 'mobx-react';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -282,6 +283,12 @@ class IndexMap extends Component {
             });
 
             instance2.post('/DeviceRoute/GetDeviceLogs', json2).then(function (response2) {
+                if (self.mapStores) {
+                    self.mapStores.fireHydrantLat = response.data.data.lat;
+                    self.mapStores.fireHydrantLong = response.data.data.long;
+                }
+
+
                 self.setState({ markerDetailInfoModalData: response.data.data, markerDetailInfoModalDataHistory: response2.data.data, showMarkerDetailLogModal: true });
             });
         });
@@ -556,6 +563,11 @@ class IndexMap extends Component {
             });
 
             instance2.post('/DeviceRoute/GetDeviceLogs', json2).then(function (response2) {
+                if (self.mapStores) {
+                    self.mapStores.fireHydrantLat = response2.data.data.lat;
+                    self.mapStores.fireHydrantLong = response2.data.data.long;
+                }
+
                 self.setState({ markerDetailInfoModalData: response.data.data, markerDetailInfoModalDataHistory: response2.data.data, showMarkerDetailLogModal: true });
             });
         });
@@ -854,7 +866,7 @@ class IndexMap extends Component {
                                         <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
                                     </div>
                                     <div className="tab-pane" id="tab2">
-                                        <MarkerDetailInfoModalTabNearByFireHydrant lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
+                                        <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
                                     </div>
                                     <div className="tab-pane" id="tab3">
                                         {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
@@ -876,7 +888,7 @@ class IndexMap extends Component {
                     <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
                 </ToastContainer>
 
-                <MarkerDetailInfoModal show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
+                <MarkerDetailInfoModal mapStores={mapStores} show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
 
                 <div className="page-content" style={{ padding: "0px" }}>
                     <div className="container-fluid" style={{ padding: "0px" }}>
@@ -931,4 +943,4 @@ class IndexMap extends Component {
 
 }
 
-export default IndexMap;
+export default observer(IndexMap);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Config } from '../../Config';
 class MarkerDetailInfoModalTabInfo extends Component {
     render() {
-        console.log(this.props.data.thumbImg);
+       
         return (
             
             <div>
