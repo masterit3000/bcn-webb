@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Config } from '../../Config';
 import { Table } from 'react-bootstrap';
 import renderHTML from 'react-render-html';
+import { observer } from 'mobx-react';
 
 class MarkerDetailInfoModal extends Component {
 
@@ -40,7 +41,7 @@ class MarkerDetailInfoModal extends Component {
     }
 
     render() {
-        const { data, dataHistory, onHide, ...rest } = this.props;
+        const { data, dataHistory, onHide, mapStores, ...rest } = this.props;
 
         return (
             <Modal {...rest} bsSize="large" aria-labelledby="contained-modal-title-lg">
@@ -78,7 +79,7 @@ class MarkerDetailInfoModal extends Component {
                                 <DeviceLogModalTable logs={this.props.dataHistory} />
                             </div>
                             <div className="tab-pane" id="tab3">
-                                <MarkerDetailInfoModalTabNearByFireHydrant lat={data.lat} long={data.long} distance={Config.distanceFireHydrant} />
+                                <MarkerDetailInfoModalTabNearByFireHydrant mapStores={this.props.mapStores} lat={data.lat} long={data.long} distance={Config.distanceFireHydrant} />
                             </div>
                             <div className="tab-pane" id="tab4">
                                 {data.thongTinCoSo ? renderHTML(data.thongTinCoSo) : ''}
@@ -94,4 +95,4 @@ class MarkerDetailInfoModal extends Component {
     }
 }
 
-export default MarkerDetailInfoModal;
+export default observer(MarkerDetailInfoModal);

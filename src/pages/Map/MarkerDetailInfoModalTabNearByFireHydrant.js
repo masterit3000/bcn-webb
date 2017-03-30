@@ -3,8 +3,12 @@ import axios from 'axios';
 import { Config } from '../../Config';
 import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
+import { MAP } from 'react-google-maps/lib/constants';
+
 import fireHydrantMarkerImg from './fire-hydrant.png';
 import _ from 'lodash';
+import { observer } from 'mobx-react';
+import mobx from 'mobx';
 
 /* global google */
 
@@ -13,7 +17,6 @@ const listGroupItemStyle = {
 }
 
 var styleContainer = {
-    position: 'relative',
     margin: 0,
     padding: 0,
     flex: 1,
@@ -26,7 +29,6 @@ var styleMap = {
     flex: 1,
     height: '350px'
 };
-
 //Render marker
 const GettingStartedGoogleMap = withGoogleMap(props => (
 
@@ -92,6 +94,7 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
         };
         this.handleFireHydrantMarkerOnMouseOut = this.handleFireHydrantMarkerOnMouseOut.bind(this);
         this.handleFireHydrantMarkerOnMouseOver = this.handleFireHydrantMarkerOnMouseOver.bind(this);
+        this.handleMapMounted = this.handleMapMounted.bind(this);
     };
 
     handleFireHydrantMarkerOnMouseOut(targetMarker) {
@@ -106,6 +109,11 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                 return marker;
             }),
         });
+    }
+
+    handleMapMounted(map) {
+        google.maps.event.trigger(map, 'resize');
+        
     }
 
     handleFireHydrantMarkerOnMouseOver(targetMarker) {
@@ -123,6 +131,8 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
     }
 
     componentWillReceiveProps(props) {
+        var cloneStores = mobx.toJS(props.mapStores);
+
         var self = this;
         var token = localStorage.getItem('token');
         var json = {}
@@ -149,8 +159,12 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                     defaultAnimation: 2,
                 },
                 center: { lat: _.toNumber(props.lat), lng: _.toNumber(props.long) }
+
             });
+
+
         });
+
     }
 
     render() {
@@ -170,6 +184,8 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                     fireHydrantsMarkers={
                         this.state.datas
                     }
+                    onMapMounted={this.handleMapMounted}
+
                     onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
                     onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
                 />
@@ -204,4 +220,4 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
     }
 }
 
-export default MarkerDetailInfoModalTabNearByFireHydrant;
+export default observer(MarkerDetailInfoModalTabNearByFireHydrant);

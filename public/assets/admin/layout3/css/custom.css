@@ -17,3 +17,17 @@ Rounded Portlets
 	border-radius: 0px 0px 4px 4px !important;
 }
 */
+
+.page-header{
+	position: fixed;
+    z-index: 999;
+    top: 0;
+}
+
+.page-container{
+	margin-top: 127px;
+}
+
+body{
+	background-color: #eff3f8 !important;
+}
