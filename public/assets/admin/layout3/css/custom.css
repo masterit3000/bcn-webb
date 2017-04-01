@@ -31,3 +31,7 @@ Rounded Portlets
 body{
 	background-color: #eff3f8 !important;
 }
+
+.modal-content{
+	margin-top: 170px;
+}
