@@ -10,7 +10,10 @@ class Menu extends Component {
                     <div className="hor-menu">
                         <ul className="nav navbar-nav">
                             <li>
-                                <Link to="/">Bản đồ</Link>
+                                <Link to="/">Trang chủ</Link>
+                            </li>
+                            <li>
+                                <Link to="/Map">Bản đồ</Link>
                             </li>
                             <li>
                                 <Link to="/FireHistory">Lịch sử báo cháy</Link>
