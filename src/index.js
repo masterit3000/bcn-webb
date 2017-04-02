@@ -19,12 +19,13 @@ import Account from './pages/Account/Account';
 import ChangePassword from './pages/Account/ChangePassword';
 import Buildings from './pages/Category/Buildings/Buildings';
 import FireHydrant from './pages/Category/FireHydrant/FireHydrant';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 ReactDOM.render(
   <IntlProvider locale="vi" messages={generatedMessages.translationMessages.vi}>
     <Router history={browserHistory}>
       <Route path="/" component={App}>
-        <IndexRoute component={IndexMap} />
+        <IndexRoute component={Dashboard} />
         <Route path="/ListDevices" component={ListDevices} />
         <Route path="/Admins" component={Admins} />
         <Route path="/FireHistory" component={FireHistory} />
@@ -37,12 +38,12 @@ ReactDOM.render(
         </Route>
         <Route path="/Buildings" component={Buildings} />
         <Route path="/FireHydrant" component={FireHydrant} />
-        
+
       </Route>
       <Route path="/Login" component={Login}>
-
       </Route>
-
+      <Route path="/Map" component={IndexMap}>
+      </Route>
     </Router>
   </IntlProvider>,
   document.getElementById('root')

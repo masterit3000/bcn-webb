@@ -4,21 +4,25 @@
     margin: 60px auto 20px auto;
     padding: "15px";
     text-align: "center";
-    color: "#FFF";
+    color: "#333";
 }
 
 .logo a{
     text-align: center;
-    color: #FFF;
+    color: #333;
     font-size: 15px;
     margin: 0 auto;
 }
 
+.login-form{
+    color: #333 !important;
+}
+
 .login-s{
-    color: #333333;
+    color: #eff3f8 !important;
     padding: 0px !important;
     margin: 0px !important;
-    background-color: #333333;
+    background-color: #eff3f8 !important;
     height: "100%"
 }
     .hidden { display:none; }
@@ -39,8 +43,8 @@
     border-radius: 7px;
 }
 
-.page-md{
+/*.page-md{
     position:absolute;
-    height:1080px;
+    height:900px;
     width: 100%;
-}
+}*/

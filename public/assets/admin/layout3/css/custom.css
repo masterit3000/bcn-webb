@@ -18,20 +18,7 @@ Rounded Portlets
 }
 */
 
-.page-header{
-	position: fixed;
-    z-index: 999;
-    top: 0;
-}
-
-.page-container{
-	margin-top: 127px;
-}
 
 body{
 	background-color: #eff3f8 !important;
-}
-
-.modal-content{
-	margin-top: 170px;
 }

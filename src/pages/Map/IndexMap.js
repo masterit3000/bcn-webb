@@ -364,8 +364,9 @@ class IndexMap extends Component {
         });
         //end save log
     }
-
+   
     componentDidMount() {
+       
         var self = this;
 
         socket.on('DeviceFireStateChanged', function (data) {
@@ -743,20 +744,6 @@ class IndexMap extends Component {
     }
 
     render() {
-        var styleContainer = {
-            position: 'relative',
-            margin: 0,
-            padding: 0,
-            flex: 1,
-            height: '100%'
-        };
-        var styleMap = {
-            position: 'relative',
-            margin: 0,
-            padding: 0,
-            flex: 1,
-            height: '800px'
-        };
 
         const { value, suggestions } = this.state;
 
@@ -769,7 +756,7 @@ class IndexMap extends Component {
 
         return (
             //BEGIN PAGE CONTAINER 
-            <div className="page-container">
+            <div className="page-map">
                 <Modal show={this.state.showModal} onHide={this.close}>
                     <Modal.Header closeButton>
                         <Modal.Title>Cảnh báo cháy</Modal.Title>
@@ -890,52 +877,61 @@ class IndexMap extends Component {
 
                 <MarkerDetailInfoModal mapStores={mapStores} show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
 
-                <div className="page-content" style={{ padding: "0px" }}>
-                    <div className="container-fluid" style={{ padding: "0px" }}>
-                        <Autosuggest
-                            theme={themeAutoSuggest}
-                            suggestions={suggestions}
-                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                            onSuggestionSelected={this.onSuggestionSelected}
-                            getSuggestionValue={getSuggestionValue}
-                            renderSuggestion={renderSuggestion}
-                            inputProps={inputProps}
-                            alwaysRenderSuggestions={true}
-                        />
+                <Autosuggest
+                    theme={themeAutoSuggest}
+                    suggestions={suggestions}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    onSuggestionSelected={this.onSuggestionSelected}
+                    getSuggestionValue={getSuggestionValue}
+                    renderSuggestion={renderSuggestion}
+                    inputProps={inputProps}
+                    alwaysRenderSuggestions={true}
+                />
 
-                        <GettingStartedGoogleMap
-                            center={this.state.center}
-                            containerElement={
-                                <div style={styleContainer} />
-                            }
-                            mapElement={
-                                <div style={styleMap} />
-                            }
-                            markers={
-                                this.state.markers
-                            }
-                            markerPlace={
-                                this.state.markerPlace
-                            }
-                            fireHydrantsMarkers={
-                                this.state.fireHydrantsMarkers
-                            }
-                            onMapMounted={this.handleMapMounted}
-                            onBoundsChanged={this.handleBoundsChanged}
-                            bounds={this.state.bounds}
-                            onSearchBoxMounted={this.handleSearchBoxMounted}
-                            onPlacesChanged={this.handlePlacesChanged}
-                            onMarkerClick={this.handleMarkerClick}
-                            onMarkerClose={this.handleMarkerClose}
-                            onMarkerMouseOut={this.handleMarkerOnMouseOut}
-                            onMarkerMouseOver={this.handleMarkerOnMouseOver}
-                            onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
-                            onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
-                        />
-
-                    </div>
-                </div>
+                <GettingStartedGoogleMap
+                    center={this.state.center}
+                    containerElement={
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                        }} />
+                    }
+                    mapElement={
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                        }} />
+                    }
+                    markers={
+                        this.state.markers
+                    }
+                    markerPlace={
+                        this.state.markerPlace
+                    }
+                    fireHydrantsMarkers={
+                        this.state.fireHydrantsMarkers
+                    }
+                    onMapMounted={this.handleMapMounted}
+                    onBoundsChanged={this.handleBoundsChanged}
+                    bounds={this.state.bounds}
+                    onSearchBoxMounted={this.handleSearchBoxMounted}
+                    onPlacesChanged={this.handlePlacesChanged}
+                    onMarkerClick={this.handleMarkerClick}
+                    onMarkerClose={this.handleMarkerClose}
+                    onMarkerMouseOut={this.handleMarkerOnMouseOut}
+                    onMarkerMouseOver={this.handleMarkerOnMouseOver}
+                    onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
+                    onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
+                />
 
             </div>
         );
