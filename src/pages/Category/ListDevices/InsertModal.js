@@ -590,7 +590,7 @@ class InsertModal extends Component {
                                                     <select onChange={this.handleChanged} className="form-control" id="idSelectPhone" name="selectPhone" >
                                                         {options}
                                                     </select>
-                                                    <label htmlFor="idSelectPhone">Kết Nối điện thoại</label>
+                                                    <label htmlFor="idSelectPhone">Kết Nối AKIDO</label>
                                                 </div>
                                                 {/*End Tab 1*/}
                                             </div>

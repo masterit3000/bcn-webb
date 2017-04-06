@@ -41,7 +41,7 @@ class ListAndroidDevices extends Component {
         return (
             //BEGIN PAGE CONTAINER 
             <div className="page-container">
-                <PageHead title="Phê duyệt" subTitle="Danh sách điện thoại" />
+                <PageHead title="Phê duyệt" subTitle="Danh sách AKIDO" />
                 <div className="page-content">
                     <div className="container-fluid">
                         {/*<!-- BEGIN PAGE CONTENT INNER -->*/}
@@ -51,7 +51,7 @@ class ListAndroidDevices extends Component {
                                     <div className="portlet-title">
                                         <div className="caption">
                                             <i className="fa fa-list-alt" aria-hidden="true"></i>
-                                            Danh sách điện thoại
+                                            Danh sách AKIDO
 							            </div>
                                         <div className="tools">
                                             <a href="#" className="collapse">
