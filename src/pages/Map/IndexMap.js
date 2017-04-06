@@ -22,6 +22,8 @@ import { Table } from 'react-bootstrap';
 import renderHTML from 'react-render-html';
 import MarkerDetailInfoModalTabNearByFireHydrant from './MarkerDetailInfoModalTabNearByFireHydrant';
 import { observer } from 'mobx-react';
+import Sidebar from 'react-sidebar';
+import NotificationSideBar from './NotificationSideBar';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -225,7 +227,9 @@ class IndexMap extends Component {
             center: { lat: 21.028952, lng: 105.852394 },
             value: '', //for suggestion
             suggestions: [],
-            markerDetailInfoModalData: {}
+            markerDetailInfoModalData: {},
+            sidebarIcon: 'fa fa-bell',
+            sidebarIconColor: '#1abc9c'
         };
         this.close = this.close.bind(this);
         this.closeLogModal = this.closeLogModal.bind(this);
@@ -249,7 +253,29 @@ class IndexMap extends Component {
         this.handleFireHydrantMarkerOnMouseOut = this.handleFireHydrantMarkerOnMouseOut.bind(this);
         this.handleFireHydrantMarkerOnMouseOver = this.handleFireHydrantMarkerOnMouseOver.bind(this);
         this.getFireHydrants = this.getFireHydrants.bind(this);
+        this.onNotificationClicked = this.onNotificationClicked.bind(this);
     }
+
+    //Sidebar config
+
+    getInitialState() {
+        return { sidebarOpen: false, sidebarDocked: false };
+    }
+
+    onNotificationClicked() {
+        if (this.state.sidebarOpen) {
+            this.onSetSidebarOpen(false);
+            this.setState({ sidebarIcon: 'fa fa-bell', sidebarIconColor: '#1abc9c' });
+        } else {
+            this.onSetSidebarOpen(true);
+            this.setState({ sidebarIcon: 'fa fa-times', sidebarIconColor: '#e74c3c' });
+        }
+    }
+
+    onSetSidebarOpen(open) {
+        this.setState({ sidebarOpen: open, docked: open });
+    }
+    //End side bar
 
     //Suggestion
     onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
@@ -364,9 +390,9 @@ class IndexMap extends Component {
         });
         //end save log
     }
-   
+
     componentDidMount() {
-       
+
         var self = this;
 
         socket.on('DeviceFireStateChanged', function (data) {
@@ -745,6 +771,20 @@ class IndexMap extends Component {
 
     render() {
 
+        const sidebarContent = <NotificationSideBar />;
+
+        const sidebarProps = {
+            sidebar: sidebarContent,
+            sidebarClassName: 'sidebar-notification',
+            open: this.state.sidebarOpen,
+            touch: true,
+            docked: this.state.docked,
+            shadow: true,
+            touchHandleWidth: 20,
+            dragToggleDistance: 30,
+            transitions: true,
+            onSetOpen: this.onSetSidebarOpen,
+        };
         const { value, suggestions } = this.state;
 
         // Autosuggest will pass through all these props to the input element.
@@ -756,184 +796,190 @@ class IndexMap extends Component {
 
         return (
             //BEGIN PAGE CONTAINER 
-            <div className="page-map">
-                <Modal show={this.state.showModal} onHide={this.close}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Cảnh báo cháy</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Sound url="assets/ding.wav" playStatus="PLAYING" />
-                        <div>
-                            <div className="tabbable-line">
-                                <ul className="nav nav-tabs ">
-                                    <li className="active">
-                                        <a href="#tab1" data-toggle="tab">
-                                            Thông tin chi tiết </a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab2" data-toggle="tab">
-                                            Nguồn nước </a>
-                                    </li>
+            <Sidebar {...sidebarProps}>
+                <div className="page-map">
+                    <Modal show={this.state.showModal} onHide={this.close}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Cảnh báo cháy</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Sound url="assets/ding.wav" playStatus="PLAYING" />
+                            <div>
+                                <div className="tabbable-line">
+                                    <ul className="nav nav-tabs ">
+                                        <li className="active">
+                                            <a href="#tab1" data-toggle="tab">
+                                                Thông tin chi tiết </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab2" data-toggle="tab">
+                                                Nguồn nước </a>
+                                        </li>
 
-                                    <li>
-                                        <a href="#tab3" data-toggle="tab">
-                                            Thông tin cơ sở </a>
-                                    </li>
-                                </ul>
-                                <div className="tab-content">
-                                    <div className="tab-pane active" id="tab1">
-                                        {
-                                            this.state.modalContentThumbImg && this.state.modalContentThumbImg.length > 0
-                                                ?
-                                                <div>
-                                                    <img src={Config.ServiceUrl + "/uploads/DeviceThumb/" + this.state.modalContentThumbImg} width="300px" height="auto" style={{ display: 'block', margin: '0 auto' }} />
-                                                    <br />
-                                                    <br />
-                                                </div>
-                                                :
-                                                ''
-                                        }
-                                        <ul className="list-group">
-                                            <li className="list-group-item">
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        ID:
+                                        <li>
+                                            <a href="#tab3" data-toggle="tab">
+                                                Thông tin cơ sở </a>
+                                        </li>
+                                    </ul>
+                                    <div className="tab-content">
+                                        <div className="tab-pane active" id="tab1">
+                                            {
+                                                this.state.modalContentThumbImg && this.state.modalContentThumbImg.length > 0
+                                                    ?
+                                                    <div>
+                                                        <img src={Config.ServiceUrl + "/uploads/DeviceThumb/" + this.state.modalContentThumbImg} width="300px" height="auto" style={{ display: 'block', margin: '0 auto' }} />
+                                                        <br />
+                                                        <br />
                                                     </div>
-                                                    <div className="col-md-10">
-                                                        <b>{this.state.modalContentId}</b>
+                                                    :
+                                                    ''
+                                            }
+                                            <ul className="list-group">
+                                                <li className="list-group-item">
+                                                    <div className="row">
+                                                        <div className="col-md-2">
+                                                            ID:
                                                     </div>
-                                                </div>
+                                                        <div className="col-md-10">
+                                                            <b>{this.state.modalContentId}</b>
+                                                        </div>
+                                                    </div>
 
-                                            </li>
-                                            <li className="list-group-item">
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        Tên:
+                                                </li>
+                                                <li className="list-group-item">
+                                                    <div className="row">
+                                                        <div className="col-md-2">
+                                                            Tên:
                                                     </div>
-                                                    <div className="col-md-10">
-                                                        <b>{this.state.modalContentName}</b>
+                                                        <div className="col-md-10">
+                                                            <b>{this.state.modalContentName}</b>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                            <li className="list-group-item">
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        Địa chỉ:
+                                                </li>
+                                                <li className="list-group-item">
+                                                    <div className="row">
+                                                        <div className="col-md-2">
+                                                            Địa chỉ:
                                                     </div>
-                                                    <div className="col-md-10">
-                                                        <b>{this.state.modalContentAddress}</b>
+                                                        <div className="col-md-10">
+                                                            <b>{this.state.modalContentAddress}</b>
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                            </li>
-                                            <li className="list-group-item">
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        Điện thoại:
+                                                </li>
+                                                <li className="list-group-item">
+                                                    <div className="row">
+                                                        <div className="col-md-2">
+                                                            Điện thoại:
                                                     </div>
-                                                    <div className="col-md-10">
-                                                        <b>{this.state.modalContentPhone}</b>
+                                                        <div className="col-md-10">
+                                                            <b>{this.state.modalContentPhone}</b>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
+                                                </li>
 
-                                            <li className="list-group-item">
-                                                <div className="row">
-                                                    <div className="col-md-2">
-                                                        Mô tả:
+                                                <li className="list-group-item">
+                                                    <div className="row">
+                                                        <div className="col-md-2">
+                                                            Mô tả:
                                                     </div>
-                                                    <div className="col-md-10">
-                                                        <b>{this.state.modalContentDesc}</b>
+                                                        <div className="col-md-10">
+                                                            <b>{this.state.modalContentDesc}</b>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <br /> <br />
-                                        <label htmlFor="txtTxtFireNote">Nhập ghi chú vụ cháy</label>
-                                        <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
+                                                </li>
+                                            </ul>
+                                            <br /> <br />
+                                            <label htmlFor="txtTxtFireNote">Nhập ghi chú vụ cháy</label>
+                                            <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
+                                        </div>
+                                        <div className="tab-pane" id="tab2">
+                                            <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
+                                        </div>
+                                        <div className="tab-pane" id="tab3">
+                                            {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
+                                        </div>
+
                                     </div>
-                                    <div className="tab-pane" id="tab2">
-                                        <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
-                                    </div>
-                                    <div className="tab-pane" id="tab3">
-                                        {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
-                                    </div>
-
                                 </div>
                             </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button bsStyle="danger" onClick={this.close}>Close</Button>
-                    </Modal.Footer>
-                </Modal>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button bsStyle="danger" onClick={this.close}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
 
-                <ToastContainer
-                    toastMessageFactory={ToastMessageFactory}
-                    ref="container"
-                    className="toast-top-right">
-                    <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
-                </ToastContainer>
+                    <ToastContainer
+                        toastMessageFactory={ToastMessageFactory}
+                        ref="container"
+                        className="toast-top-right">
+                        <Sound url="assets/you-have-new-message.mp3" playStatus="PLAYING" />
+                    </ToastContainer>
 
-                <MarkerDetailInfoModal mapStores={mapStores} show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
+                    <MarkerDetailInfoModal mapStores={mapStores} show={this.state.showMarkerDetailLogModal} data={this.state.markerDetailInfoModalData} dataHistory={this.state.markerDetailInfoModalDataHistory} onHide={this.closeMarkerDetailLogModal} />
 
-                <Autosuggest
-                    theme={themeAutoSuggest}
-                    suggestions={suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    onSuggestionSelected={this.onSuggestionSelected}
-                    getSuggestionValue={getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
-                    inputProps={inputProps}
-                    alwaysRenderSuggestions={true}
-                />
+                    <Autosuggest
+                        theme={themeAutoSuggest}
+                        suggestions={suggestions}
+                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                        onSuggestionSelected={this.onSuggestionSelected}
+                        getSuggestionValue={getSuggestionValue}
+                        renderSuggestion={renderSuggestion}
+                        inputProps={inputProps}
+                        alwaysRenderSuggestions={true}
+                    />
 
-                <GettingStartedGoogleMap
-                    center={this.state.center}
-                    containerElement={
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            justifyContent: 'flex-end',
-                            alignItems: 'center',
-                        }} />
-                    }
-                    mapElement={
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                        }} />
-                    }
-                    markers={
-                        this.state.markers
-                    }
-                    markerPlace={
-                        this.state.markerPlace
-                    }
-                    fireHydrantsMarkers={
-                        this.state.fireHydrantsMarkers
-                    }
-                    onMapMounted={this.handleMapMounted}
-                    onBoundsChanged={this.handleBoundsChanged}
-                    bounds={this.state.bounds}
-                    onSearchBoxMounted={this.handleSearchBoxMounted}
-                    onPlacesChanged={this.handlePlacesChanged}
-                    onMarkerClick={this.handleMarkerClick}
-                    onMarkerClose={this.handleMarkerClose}
-                    onMarkerMouseOut={this.handleMarkerOnMouseOut}
-                    onMarkerMouseOver={this.handleMarkerOnMouseOver}
-                    onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
-                    onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
-                />
+                    <GettingStartedGoogleMap
+                        center={this.state.center}
+                        containerElement={
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                            }} />
+                        }
+                        mapElement={
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                            }} />
+                        }
+                        markers={
+                            this.state.markers
+                        }
+                        markerPlace={
+                            this.state.markerPlace
+                        }
+                        fireHydrantsMarkers={
+                            this.state.fireHydrantsMarkers
+                        }
+                        onMapMounted={this.handleMapMounted}
+                        onBoundsChanged={this.handleBoundsChanged}
+                        bounds={this.state.bounds}
+                        onSearchBoxMounted={this.handleSearchBoxMounted}
+                        onPlacesChanged={this.handlePlacesChanged}
+                        onMarkerClick={this.handleMarkerClick}
+                        onMarkerClose={this.handleMarkerClose}
+                        onMarkerMouseOut={this.handleMarkerOnMouseOut}
+                        onMarkerMouseOver={this.handleMarkerOnMouseOver}
+                        onFireHydrantMarkerMouseOut={this.handleFireHydrantMarkerOnMouseOut}
+                        onFireHydrantMarkerMouseOver={this.handleFireHydrantMarkerOnMouseOver}
+                    />
 
-            </div>
+                </div>
+                <div id="notification-circle" style={{ background: this.state.sidebarIconColor }} onClick={this.onNotificationClicked}>
+                    {/*<span id="number">31</span>*/}
+                    <i className={this.state.sidebarIcon} aria-hidden="true"></i>
+                </div>
+            </Sidebar>
         );
     }
 

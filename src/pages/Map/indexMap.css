@@ -19,8 +19,13 @@
     box-shadow: rgba(0, 0, 0, 0.298039) 0px 2px 6px;
     font-size: 14px;
     outline: none;
-    left: 360px;
+    right: 10px;
     top: 0px;
+    transition: box-shadow 0.4s ease-in-out;
+
+}
+.react-autosuggest__input_indexMap:hover {
+    box-shadow: rgba(0, 0, 0, 0.598039) 0px 2px 6px;
 
 }
 
@@ -55,7 +60,7 @@
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     z-index: 2;
-    left: 360px;
+    right: 10px;
 }
 
 @media (max-width: 991px) {
@@ -87,4 +92,62 @@
 .suggestionSub {
     font-size: 12px;
     color: #d3d3d3;
+}
+
+#notification-circle {
+    cursor:pointer;
+    top: 50px;
+    left: 11px;
+    position: absolute;
+    z-index: 20;
+	width: 40px;
+	height: 40px;
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+    -webkit-box-shadow: -3px 7px 55px -10px rgba(0,0,0,0.61);
+    -moz-box-shadow: -3px 7px 55px -10px rgba(0,0,0,0.61);
+    box-shadow: -3px 7px 55px -10px rgba(0,0,0,0.61);
+    text-align: center;
+    transition: box-shadow 0.4s ease-in-out;
+    
+}
+
+#notification-circle:hover {
+    cursor:pointer; 
+    box-shadow: 0 5px 25px rgba(0,0,0,0.41);
+}
+
+#notification-circle #number{
+    cursor:pointer;
+    position: absolute;
+    top: -4px;
+    left: 25px;
+    z-index: 22;
+    width: 19px;
+    height: 19px;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    background: #f36a5a;
+    line-height:19px;
+    border: 1px solid white;
+
+}
+
+#notification-circle .fa {
+    margin-top: 12px;
+    color: #FFFFFF;
+    font-size: 25px;
+    z-index: 21;
+    width: 40px;
+    cursor:pointer;
+}
+
+.sidebar-notification{
+    background-color: white;
+    width: 350px;
 }

@@ -18,11 +18,13 @@ class Menu extends Component {
                             <li>
                                 <Link to="/FireHistory">Lịch sử báo cháy</Link>
                             </li>
+                           
                             <li className="menu-dropdown classic-menu-dropdown">
                                 <a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="#">
-                                    Quản lý thiết bị <i className="fa fa-angle-down"></i>
+                                    Quản lý danh mục <i className="fa fa-angle-down"></i>
                                 </a>
                                 <ul className="dropdown-menu pull-left">
+                                    
                                     <li className="dropdown">
                                         <Link to="/ListDevices">
                                             <i className="fa fa-fire"></i>&nbsp;
@@ -36,13 +38,6 @@ class Menu extends Component {
                                             Điện thoại
                                              </Link>
                                     </li>
-                                </ul>
-                            </li>
-                            <li className="menu-dropdown classic-menu-dropdown">
-                                <a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="#">
-                                    Quản lý danh mục <i className="fa fa-angle-down"></i>
-                                </a>
-                                <ul className="dropdown-menu pull-left">
                                     <li className="dropdown">
                                         <Link to="/Area">
                                             <i className="fa fa-area-chart"></i>&nbsp;
