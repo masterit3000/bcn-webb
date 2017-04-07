@@ -4,7 +4,6 @@ import { Config } from '../../Config';
 import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps";
 import { MAP } from 'react-google-maps/lib/constants';
-
 import fireHydrantMarkerImg from './fire-hydrant.png';
 import _ from 'lodash';
 import { observer } from 'mobx-react';
@@ -161,12 +160,9 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                 center: { lat: _.toNumber(props.lat), lng: _.toNumber(props.long) }
 
             });
-
-
         });
-
     }
-
+    
     render() {
         return (
             <div>
@@ -193,7 +189,6 @@ class MarkerDetailInfoModalTabNearByFireHydrant extends Component {
                     data={this.state.datas}
                     deleteRow={false}
                     insertRow={false}
-                    search={true}
                     pagination
                     striped
                     hover>
