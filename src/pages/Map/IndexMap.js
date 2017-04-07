@@ -24,6 +24,7 @@ import MarkerDetailInfoModalTabNearByFireHydrant from './MarkerDetailInfoModalTa
 import { observer } from 'mobx-react';
 import Sidebar from 'react-sidebar';
 import NotificationSideBar from './NotificationSideBar';
+import { browserHistory } from 'react-router';
 
 //Set lai theme cho auto suggest bang cach dat ten class + indexMap de tranh viec bi trung className
 const themeAutoSuggest = {
@@ -229,7 +230,8 @@ class IndexMap extends Component {
             suggestions: [],
             markerDetailInfoModalData: {},
             sidebarIcon: 'fa fa-bell',
-            sidebarIconColor: '#1abc9c'
+            sidebarIconColor: '#1abc9c',
+            sidebarHomeIconColor: '#3498db'
         };
         this.close = this.close.bind(this);
         this.closeLogModal = this.closeLogModal.bind(this);
@@ -254,12 +256,18 @@ class IndexMap extends Component {
         this.handleFireHydrantMarkerOnMouseOver = this.handleFireHydrantMarkerOnMouseOver.bind(this);
         this.getFireHydrants = this.getFireHydrants.bind(this);
         this.onNotificationClicked = this.onNotificationClicked.bind(this);
+        this.onHomeClicked = this.onHomeClicked.bind(this);
     }
 
     //Sidebar config
 
     getInitialState() {
         return { sidebarOpen: false, sidebarDocked: false };
+    }
+
+    onHomeClicked() {
+        browserHistory.push('/');
+        
     }
 
     onNotificationClicked() {
@@ -978,6 +986,11 @@ class IndexMap extends Component {
                 <div id="notification-circle" style={{ background: this.state.sidebarIconColor }} onClick={this.onNotificationClicked}>
                     {/*<span id="number">31</span>*/}
                     <i className={this.state.sidebarIcon} aria-hidden="true"></i>
+                </div>
+
+                <div id="notification-circle-home" style={{ background: this.state.sidebarHomeIconColor }} onClick={this.onHomeClicked}>
+                    {/*<span id="number">31</span>*/}
+                    <i className="icon-home" aria-hidden="true"></i>
                 </div>
             </Sidebar>
         );
