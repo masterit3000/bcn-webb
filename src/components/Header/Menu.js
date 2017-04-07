@@ -44,13 +44,13 @@ class Menu extends Component {
                                                 Quản lý khu vực
                                             </Link>
                                     </li>
-                                    <li className="dropdown">
+                                    {/*<li className="dropdown">
                                         <Link to="/Buildings">
                                             <i className="fa fa-building-o"></i>&nbsp;
                                             Dạng kiến trúc công trình
                                         </Link>
 
-                                    </li>
+                                    </li>*/}
                                     <li className="dropdown">
                                         <Link to="/FireHydrant">
                                             <i className="fa fa-tint"></i>&nbsp;
