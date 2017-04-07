@@ -35,7 +35,7 @@ class Menu extends Component {
                                         <Link to="/ListAndroidDevices">
 
                                             <i className="fa fa-mobile"></i>&nbsp;
-                                            Điện thoại
+                                            Danh sách AKIDO
                                              </Link>
                                     </li>
                                     <li className="dropdown">

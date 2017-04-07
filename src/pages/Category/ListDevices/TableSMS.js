@@ -3,7 +3,6 @@ import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap
 import { observer } from 'mobx-react';
 import mobx from 'mobx';
 
-
 class TableSMS extends Component {
 
     constructor(props) {
