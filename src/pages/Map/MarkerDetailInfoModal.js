@@ -61,10 +61,10 @@ class MarkerDetailInfoModal extends Component {
                                 <a href="#tab2" data-toggle="tab">
                                     Nhật ký </a>
                             </li>
-                            <li>
+                            {/*<li>
                                 <a href="#tab3" data-toggle="tab">
                                     Nguồn nước </a>
-                            </li>
+                            </li>*/}
 
                             <li>
                                 <a href="#tab4" data-toggle="tab">
@@ -74,13 +74,16 @@ class MarkerDetailInfoModal extends Component {
                         <div className="tab-content">
                             <div className="tab-pane active" id="tab1">
                                 <MarkerDetailInfoModalTabInfo data={data} />
+                                <br />
+                                <MarkerDetailInfoModalTabNearByFireHydrant mapStores={this.props.mapStores} lat={data.lat} long={data.long} distance={Config.distanceFireHydrant} />
+
                             </div>
                             <div className="tab-pane" id="tab2">
                                 <DeviceLogModalTable logs={this.props.dataHistory} />
                             </div>
-                            <div className="tab-pane" id="tab3">
-                                <MarkerDetailInfoModalTabNearByFireHydrant mapStores={this.props.mapStores} lat={data.lat} long={data.long} distance={Config.distanceFireHydrant} />
-                            </div>
+                            {/*<div className="tab-pane" id="tab3">
+
+                            </div>*/}
                             <div className="tab-pane" id="tab4">
                                 {data.thongTinCoSo ? renderHTML(data.thongTinCoSo) : ''}
                             </div>

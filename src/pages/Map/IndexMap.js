@@ -267,7 +267,7 @@ class IndexMap extends Component {
 
     onHomeClicked() {
         browserHistory.push('/');
-        
+
     }
 
     onNotificationClicked() {
@@ -819,11 +819,10 @@ class IndexMap extends Component {
                                             <a href="#tab1" data-toggle="tab">
                                                 Thông tin chi tiết </a>
                                         </li>
-                                        <li>
+                                        {/*<li>
                                             <a href="#tab2" data-toggle="tab">
                                                 Nguồn nước </a>
-                                        </li>
-
+                                        </li>*/}
                                         <li>
                                             <a href="#tab3" data-toggle="tab">
                                                 Thông tin cơ sở </a>
@@ -831,6 +830,7 @@ class IndexMap extends Component {
                                     </ul>
                                     <div className="tab-content">
                                         <div className="tab-pane active" id="tab1">
+
                                             {
                                                 this.state.modalContentThumbImg && this.state.modalContentThumbImg.length > 0
                                                     ?
@@ -900,10 +900,12 @@ class IndexMap extends Component {
                                             <br /> <br />
                                             <label htmlFor="txtTxtFireNote">Nhập ghi chú vụ cháy</label>
                                             <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
-                                        </div>
-                                        <div className="tab-pane" id="tab2">
+
                                             <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
                                         </div>
+                                        {/*<div className="tab-pane" id="tab2">
+                                            <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
+                                        </div>*/}
                                         <div className="tab-pane" id="tab3">
                                             {this.state.modalContentThongTinCoSo ? renderHTML(this.state.modalContentThongTinCoSo) : ''}
                                         </div>
