@@ -900,7 +900,7 @@ class IndexMap extends Component {
                                             <br /> <br />
                                             <label htmlFor="txtTxtFireNote">Nhập ghi chú vụ cháy</label>
                                             <input onChange={this.handleChanged} type="text" className="form-control" id="idTxtFireNote" name="txtTxtFireNote" />
-
+                                            <br />
                                             <MarkerDetailInfoModalTabNearByFireHydrant mapStores={mapStores} lat={this.state.modalContentLat} long={this.state.modalContentLong} distance={Config.distanceFireHydrant} />
                                         </div>
                                         {/*<div className="tab-pane" id="tab2">
