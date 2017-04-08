@@ -99,7 +99,7 @@ class MarkerDetailInfoModalTabInfo extends Component {
                     <li className="list-group-item">
                         <div className="row">
                             <div className="col-md-2">
-                                Trạng thái usb:
+                                Trạng thái nguồn:
                             </div>
                             <div className="col-md-10">
                                 <b>{this.props.data.powerCordState ?
