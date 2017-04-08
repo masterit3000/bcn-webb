@@ -5,7 +5,7 @@ class Logo extends Component {
     render() {
         return (
             <div className="page-logo">
-                <a href="/"><img src={logo} alt="logo" style={{margin: '10.5px 0 0 0' , height: '71px'}} className="logo-default" /></a>
+                <a href="/"><img src={logo} alt="logo" style={{margin: '-12.5px 0px 0px' , height: '120px'}} className="logo-default" /></a>
             </div>
         );
     }
