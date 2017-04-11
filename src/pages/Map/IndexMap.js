@@ -257,6 +257,7 @@ class IndexMap extends Component {
         this.getFireHydrants = this.getFireHydrants.bind(this);
         this.onNotificationClicked = this.onNotificationClicked.bind(this);
         this.onHomeClicked = this.onHomeClicked.bind(this);
+		 this.onLoginClicked = this.onLoginClicked.bind(this);
     }
 
     //Sidebar config
@@ -267,6 +268,10 @@ class IndexMap extends Component {
 
     onHomeClicked() {
         browserHistory.push('/');
+
+    }
+	 onLoginClicked() {
+        browserHistory.push('/Login');
 
     }
 
@@ -993,6 +998,10 @@ class IndexMap extends Component {
                 <div id="notification-circle-home" style={{ background: this.state.sidebarHomeIconColor }} onClick={this.onHomeClicked}>
                     {/*<span id="number">31</span>*/}
                     <i className="icon-home" aria-hidden="true"></i>
+                </div>
+				 <div id="notification-circle-login" style={{ background: this.state.sidebarHomeIconColor }} onClick={this.onLoginClicked}>
+                    {/*<span id="number">31</span>*/}
+                    <i className="icon-user" aria-hidden="true"></i>
                 </div>
             </Sidebar>
         );
