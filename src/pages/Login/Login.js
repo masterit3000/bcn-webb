@@ -88,7 +88,7 @@ class LoginContainer extends Component {
                         localStorage.setItem("name", response.data.name);
                         localStorage.setItem("avatar", response.data.avatar);
                         localStorage.setItem("memberSince", response.data.memberSince);
-                        browserHistory.push('/');
+                        browserHistory.push('/ListDevices');
                     } else {
                         self.setState({ isValidated: false, errorText: 'Sai tên đăng nhập hoặc mật khẩu !' });
 

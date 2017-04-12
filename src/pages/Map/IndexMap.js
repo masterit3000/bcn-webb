@@ -267,7 +267,7 @@ class IndexMap extends Component {
     }
 
     onHomeClicked() {
-        browserHistory.push('/');
+        browserHistory.push('/ListDevices');
 
     }
 	 onLoginClicked() {

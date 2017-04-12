@@ -9,9 +9,12 @@ class Menu extends Component {
                 <div className="container-fluid">
                     <div className="hor-menu">
                         <ul className="nav navbar-nav">
+						{/*
                             <li>
                                 <Link to="/">Trang chủ</Link>
                             </li>
+							
+						*/}
                             <li>
                                 <Link to="/Map">Bản đồ</Link>
                             </li>
@@ -20,9 +23,13 @@ class Menu extends Component {
                             </li>
                            
                             <li className="menu-dropdown classic-menu-dropdown">
-                                <a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="#">
-                                    Quản lý danh mục <i className="fa fa-angle-down"></i>
-                                </a>
+						
+								
+							<a data-hover="megamenu-dropdown" data-close-others="true" data-toggle="dropdown" href="/ListDevices">						
+							
+								   Quản lý danh mục <i className="fa fa-angle-down"></i>
+								
+							  </a>
                                 <ul className="dropdown-menu pull-left">
                                     
                                     <li className="dropdown">
@@ -70,11 +77,15 @@ class Menu extends Component {
                                     Nhật ký hệ thống
                                 </Link>
                             </li>
-                            <li className="right-align-menu">
+							{
+								/*
+								   <li className="right-align-menu">
                                 <Link to="/Downloads">
                                     Tài nguyên
                                 </Link>
                             </li>
+								*/
+							}
                         </ul>
                     </div>
                     {/*<!-- END MEGA MENU -->*/}
