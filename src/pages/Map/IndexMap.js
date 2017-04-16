@@ -415,7 +415,9 @@ class IndexMap extends Component {
             _.forEach(arrListDevices, function (value) {
                 if (_.isEqual(value.MarkerId, arrListDevices.MarkerId)) {
                     if (data.isFire) {
+                        console.log(data.doc.thumbImg);
                         self.setState({
+                            
                             showModal: true,
                             txtTxtFireNote: '',
                             modalContent: 'Cảnh báo cháy',
@@ -425,7 +427,7 @@ class IndexMap extends Component {
                             modalContentDesc: data.doc.desc,
                             modalContentImei: data.doc.imei,
                             modalContentId: data.markerId,
-                            modalContentThumbImg: data.thumbImg,
+                            modalContentThumbImg: data.doc.thumbImg,
                             modalContentThongTinCoSo: data.thongTinCoSo,
                             modalContentLat: data.doc.lat,
                             modalContentLong: data.doc.long,
@@ -837,6 +839,7 @@ class IndexMap extends Component {
                                         <div className="tab-pane active" id="tab1">
 
                                             {
+                                              
                                                 this.state.modalContentThumbImg && this.state.modalContentThumbImg.length > 0
                                                     ?
                                                     <div>

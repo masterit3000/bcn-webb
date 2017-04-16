@@ -97,6 +97,7 @@ class FireHydrantInsertModal extends Component {
             json.desc = this.state.txtDesc;
             json.lat = this.state.selectedLat;
             json.long = this.state.selectedLong;
+			json.areaid = 1;
 
             var instance = axios.create({
                 baseURL: Config.ServiceUrl,
